@@ -1,0 +1,21 @@
+{
+  "name": "simple-spa",
+  "version": "1.0.0",
+  "description": "This project is a lightweight, client-side router for building Single Page Applications (SPAs). It handles page navigation, content loading, dynamic styling, and basic page transitions without requiring a full framework.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "vite",
+    "spa",
+    "single-page-application"
+  ],
+  "author": "Tim Mac (@ttiimmaacc)",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}
