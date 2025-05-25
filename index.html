@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>SimpleSPA</title>
+    <!-- Link to CSS -->
+
+    <link rel="stylesheet" href="/src/stylesheets/index.css" />
+    <!-- Link to JS -->
+    <script type="module" src="/src/javascripts/index.js"></script>
+    <link rel="preload" href="/assets/fonts/regola-light.woff2" as="font" type="font/woff2" crossorigin="">
+    <style>
+        html {
+            opacity: 0;
+            transition: opacity 0.3s;
+          }
+          html.loaded {
+            opacity: 1;
+          }
+    </style>
+</head>
+
+<body class="no-javascript">
+    <!-- Start with no-javascript -->
+
+    <nav class="main-nav collapsed">
+        <button class="toggle" aria-label="Toggle navigation">
+            <span class="top">
+                <span></span>
+            </span>
+            <span class="bottom">
+                <span></span>
+            </span>
+        </button>
+        <a href="/" class="logo" style="pointer-events: all">
+            <!-- Placeholder Logo -->
+            <img src="/assets/images/logo.svg" width="147" height="32" alt="SimpleSPA" loading="eager" />
+
+        </a>
+        <div class="main-nav-list">
+            <div class="main-nav-list-container type-15">
+                <ul>
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    <li class="main-nav-item">
+                        <a href="/menu" class="backyard-menu-item-models">Menu</a>
+                        <ol class="desktop-hidden">
+                            <li><a href="/menu/1">Item 1</a></li>
+                            <li><a href="/menu/2">Item 2</a></li>
+                            <li><a href="/menu/3">Item 3</a></li>
+                        </ol>
+                    </li>
+                </ul>
+                <ol class="mobile-hidden">
+                    <li><a href="/menu/1">Item 1</a></li>
+                    <li><a href="/menu/2">Item 2</a></li>
+                    <li><a href="/menu/3">Item 3</a></li>
+                </ol>
+                <hr class="mobile-hidden" />
+            </div>
+        </div>
+
+        <!-- Add a placeholder for the call to action button -->
+        <a href="/cta-placeholder" class="nav-cta button-rounded button-rounded-blue m-type-12">
+        Call to Action
+        </a>
+        <a href="/about" class="multiunit nav-cta button-rounded button-rounded-blue">
+            <img src="/assets/images/icons/phone-white.svg" loading="lazy" alt="Phone icon" />
+            <span>Get in touch</span>
+        </a>
+    </nav>
+
+    <main class="">
+        <div class="page">
+        </div>
+    </main>
+    <div id="contact"></div>
+
+    <div class="spacer-120 m-spacer-72"></div>
+    <div class="footer-nav footer-nav-variant-light">
+        <div class="modern-grid">
+            <!-- Column 1 -->
+            <ul class="column-3">
+                <li><a href="/" class="alt">SimpleSPA</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/" target="_blank">Item</a></li>
+                <li><a href="/" target="_blank">Item</a></li>
+            </ul>
+            <!-- Column 2 -->
+            <ul class="column-3">
+                <li><a href="/home" class="alt">Column 2</a></li>
+                <li><a href="/home/models">Menu</a></li>
+                <li><a href="/home/cta">Call to Action</a></li>
+            </ul>
+            <!-- Column 3 -->
+            <ul class="column-3">
+                <li>
+                    <div class="m-spacer-24"></div>Column 3</li>
+                <li><a href="/" target="_blank">Item</a></li>
+                <li><a href="/" target="_blank">Item</a></li>
+                <li><a href="/" target="_blank">Item</a></li>
+            </ul>
+            <!-- Contact form -->
+            <div class="column-3 m-column-6 footer-contact">
+                <div class="m-spacer-32"></div>
+                <div class="m-spacer-16"></div>
+                <div class="type-14">Have questions?</div>
+                <button class="type-14" onclick="Contact.show({ variant: 'default' })">Contact us</button>
+                <div class="spacer-8"></div>
+                <div class="footer-contact-subscription">
+                    <div class="type-14">Get updates</div>
+                    <div class="type-14 footer-contact-secondary">Drop us your email to learn what's next.</div>
+                    <form class="footer-contact-input" action="/">
+                        <input type="email" class="type-14 m-type-16" required name="email" aria-label="Your email" tabindex="-1" />
+                        <input tabindex="-1" loading="lazy" type="image" src="/assets/images/icons/chevron-white.svg" alt="Submit">
+                        <div class="loader">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </form>
+                    <div class="footer-contact-status">
+                        <div class="type-14 footer-contact-secondary footer-contact-subscription-success-note">
+                            <img loading="lazy" src="/assets/images/icons/checkmark-white.svg" width="12" height="12" alt="Checkmark"> You've subscribed to newsletter updates.
+                        </div>
+                        <div class="type-14 footer-contact-secondary footer-contact-subscription-failure-note">
+                            Something went wrong.
+                            <br /><a href="mailto:customercare@samara.com?subject=Site error: joining mailing list">Click here</a> to subscribe via email.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="spacer-32"></div>
+        <div class="modern-grid type-14 footer-legal">
+            <div class="column-9 m-column-6">
+                © 2025 SimpleSPA Inc.
+                <div class="m-spacer-8"></div>
+            </div>
+            <div class="column-3 m-column-6">
+                <!-- <ol class="footnotes">
+                    <li>“SimpleSPA” simple, lightweight, single page app.</li>
+                </ol> -->
+                <div class="footer-legal-links">
+                    <a href="/privacy-policy">Privacy policy</a>
+                    <a href="/terms-of-service">Terms of service</a>
+                </div>
+            </div>
+        </div>
+        <div class="m-spacer-16"></div>
+    </div>
+
+    </div>
+    </div>
+</body>
+
+</html>
