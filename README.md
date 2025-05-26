@@ -31,10 +31,52 @@ cd simple-spa
 
 ```
 simple-spa/
+├── assets
+│   ├── fonts
+│   │   ├── regola-book.woff2
+│   │   ├── regola-light.woff2
+│   │   ├── regola-medium.woff2
+│   │   └── regola-regular.woff2
+│   └── images
+│       ├── home
+│       │   ├── intro-spa-1.png
+│       │   ├── intro-spa-2.png
+│       │   ├── intro-spa-3.png
+│       │   └── spa.png
+│       ├── icons
+│       │   ├── arrow-right-black.svg
+│       │   ├── arrow-right-blue.svg
+│       │   ├── arrow-right-white.svg
+│       │   ├── box-blue.svg
+│       │   ├── box-out-light-grey.svg
+│       │   ├── box-video-light-grey.svg
+│       │   ├── checkmark-grey.svg
+│       │   ├── checkmark-white.svg
+│       │   ├── chevron-grey.svg
+│       │   ├── chevron-mini-grey.svg
+│       │   ├── chevron-white.svg
+│       │   ├── download-blue.svg
+│       │   ├── info-grey-80.svg
+│       │   └── xmark-grey.svg
+│       ├── bullet.svg
+│       └── logo.svg
+├── src
+│   ├── javascripts
+│   │   ├── partials
+│   │   │   ├── home.html
+│   │   │   └── menu.html
+│   │   └── index.js
+│   └── stylesheets
+│       ├── sections
+│       │   └── hero.css
+│       ├── fonts.css
+│       ├── footer.css
+│       └── index.css
+├── README.md
 ├── index.html
-├── assets/
-├── src/
-└── README.md
+├── package-lock.json
+├── package.json
+└── vite.config.js
 ```
 
 ## License
