@@ -1,0 +1,118 @@
+.slide.xl .xl-title {
+    position: absolute;
+    top: 16%;
+    left: calc(var(--modern-grid-column-margin) + var(--modern-grid-column-width) + var(--modern-grid-column-gutter));
+    width: calc(var(--modern-grid-column-width) * 3 + var(--modern-grid-column-gutter) * 2);
+    line-height: 1;
+    letter-spacing: -.03em;
+    font-family: regola-light, sans-serif;
+    font-size: 3.75vw;
+}
+
+@media (max-width:768px) {
+    /* .slide.xl {
+        background: linear-gradient(180deg, #000 51.5%, #fff 100%);
+        aspect-ratio: 375/587;
+    } */
+
+    .slide.xl .xl-title {
+        top: 12%;
+        left: var(--modern-grid-column-margin);
+        width: calc(var(--modern-grid-column-width) * 5 + var(--modern-grid-column-gutter) * 4);
+        font-size: 11.2vw;
+    }
+
+    .slide.xl .xl-xl {
+        display: none;
+    }
+}
+
+.slide.xl .xl-xl {
+    position: absolute;
+    z-index: 1;
+    top: 31%;
+    left: var(--modern-grid-column-margin);
+    line-height: 1;
+    color: #000;
+    letter-spacing: -1.65vw;
+    font-family: regola-light, sans-serif;
+    font-size: 27.5vw;
+}
+
+.slide.xl .xl-subtitle {
+    position: absolute;
+    top: 78%;
+    left: calc(var(--modern-grid-column-margin) + var(--modern-grid-column-width) * 1 + var(--modern-grid-column-gutter) * 1);
+    width: calc(var(--modern-grid-column-width) * 3 + var(--modern-grid-column-gutter) * 2);
+    line-height: 1.25;
+    font-family: regola-light, sans-serif;
+    font-size: 1.6vw;
+}
+
+@media (max-width:768px) {
+    .slide.xl .xl-subtitle {
+        top: 37.5%;
+        left: var(--modern-grid-column-margin);
+        width: calc(var(--modern-grid-column-width) * 6 + var(--modern-grid-column-gutter) * 5);
+        font-size: 6.4vw;
+    }
+}
+
+.slide.xl .xl-hero-image {
+    position: absolute;
+    top: 14%;
+    left: calc(var(--modern-grid-column-margin) + var(--modern-grid-column-width) * 5 + var(--modern-grid-column-gutter) * 5);
+    width: calc(var(--modern-grid-column-width) * 7 + var(--modern-grid-column-gutter) * 6);
+    height: 78%;
+    background: rgba(255, 255, 255, .1);
+    object-fit: cover;
+}
+
+@media (max-width:768px) {
+    .slide.xl .xl-hero-image {
+        top: unset;
+        bottom: 6px;
+        left: 6px;
+        width: calc(100vw - 12px);
+        height: 46%;
+        border-radius: 6px;
+        box-shadow: 0 2px 3px 0 rgba(0, 0, 0, .1);
+    }
+}
+
+.slide.xl .xl-learn-more {
+    position: absolute;
+    top: 87%;
+    left: calc(var(--modern-grid-column-margin) + var(--modern-grid-column-width) * 1 + var(--modern-grid-column-gutter) * 1);
+    padding: 13px 18px 15px !important;
+    border-radius: 12px !important;
+}
+
+.slide.xl .xl-hero-image {
+    position: absolute;
+    top: 14%;
+    left: calc(var(--modern-grid-column-margin) + var(--modern-grid-column-width) * 5 + var(--modern-grid-column-gutter) * 5);
+    width: calc(var(--modern-grid-column-width) * 7 + var(--modern-grid-column-gutter) * 6);
+    height: 78%;
+    background: rgba(255, 255, 255, .1);
+    object-fit: cover;
+}
+
+@media (max-width:768px) {
+    .slide.xl .xl-hero-image {
+        top: unset;
+        bottom: 6px;
+        left: 6px;
+        width: calc(100vw - 12px);
+        height: 46%;
+        border-radius: 6px;
+        box-shadow: 0 2px 3px 0 rgba(0, 0, 0, .1);
+    }
+
+
+    .slide.xl .xl-learn-more {
+        z-index: 1;
+        top: 50%;
+        left: var(--modern-grid-column-margin);
+    }
+}

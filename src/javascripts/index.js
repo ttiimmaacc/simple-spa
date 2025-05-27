@@ -1,0 +1,479 @@
+const PAGES_METADATA = {
+  "/": {
+    title: "SimpleSPA - Home",
+    partial: "/src/javascripts/partials/home.html",
+    class_names: "home-page",
+    theme_color: "#000000",
+    navigation_inverted: false,
+    position: 2,
+  },
+  "/home": {
+    title: "SimpleSPA - Home",
+    partial: "/src/javascripts/partials/home.html",
+    class_names: "home-page",
+    theme_color: "#000000",
+    navigation_inverted: false,
+    position: 2,
+  },
+  "/menu": {
+    title: "SimpleSPA - Menu",
+    partial: "/src/javascripts/partials/menu.html",
+    class_names: "multi-menu menu-page",
+    theme_color: "#000000",
+    navigation_inverted: true,
+    position: 1,
+  },
+};
+
+const pageContainerElement = document.querySelector("main .page");
+const mainContentElement = document.querySelector("main");
+const navElement = document.querySelector("nav.main-nav");
+const navLinksForCurrentClass = navElement
+  ? Array.from(navElement.querySelectorAll(".main-nav-list ul a"))
+  : [];
+
+const toggleButton = navElement ? navElement.querySelector(".toggle") : null;
+const themeColorMetaTag = document.querySelector("meta[name=theme-color]");
+
+// --- State Variables ---
+let pageDataCache = {};
+let previousRoutePathForStyles;
+let segueTimeoutId;
+let pendingNavigationArgs = [];
+let isNavigating = false;
+let currentPath = normalizePath(location.pathname);
+let navigatingToPathCurrently = null;
+
+// --- Helper Functions ---
+function dispatchRouterEvent(eventName, detail) {
+  window.dispatchEvent(new CustomEvent(eventName, { detail: detail }));
+}
+
+function normalizePath(rawPath = null) {
+  let path = rawPath || location.pathname;
+  path = path.split("#")[0];
+  if (path.length > 1 && path.endsWith("/")) {
+    path = path.slice(0, path.length - 1);
+  }
+  if (path === "") return "/";
+  if (path === "/" && PAGES_METADATA["/home"] && !PAGES_METADATA["/"])
+    return "/home";
+  return path;
+}
+
+function applyCurrentPageStylesAndMeta() {
+  const pathForMeta = normalizePath(location.pathname);
+  let currentPageMeta = PAGES_METADATA[pathForMeta] || PAGES_METADATA["/"];
+
+  if (currentPageMeta) {
+    if (themeColorMetaTag && currentPageMeta.theme_color) {
+      themeColorMetaTag.setAttribute("content", currentPageMeta.theme_color);
+    }
+    if (
+      currentPageMeta.class_names &&
+      typeof currentPageMeta.class_names === "string"
+    ) {
+      const classList = currentPageMeta.class_names.split(" ").filter(Boolean);
+      if (classList.length > 0) document.body.classList.add(...classList);
+    }
+    if (
+      navElement &&
+      typeof currentPageMeta.navigation_inverted === "boolean"
+    ) {
+      navElement.classList.toggle(
+        "inverted",
+        currentPageMeta.navigation_inverted
+      );
+    }
+  }
+  previousRoutePathForStyles = pathForMeta;
+}
+
+function removePreviousPageStyles() {
+  const pathToRemoveStylesFor = previousRoutePathForStyles;
+  if (!pathToRemoveStylesFor) return;
+
+  const prevPageMeta = PAGES_METADATA[pathToRemoveStylesFor];
+  if (prevPageMeta) {
+    if (
+      prevPageMeta.class_names &&
+      typeof prevPageMeta.class_names === "string"
+    ) {
+      const classList = prevPageMeta.class_names.split(" ").filter(Boolean);
+      classList.forEach((cls) => {
+        if (
+          !["interactive", "complete", "segue", "no-javascript"].includes(cls)
+        ) {
+          document.body.classList.remove(cls);
+        }
+      });
+    }
+  }
+}
+
+function updateNavigationLinkStates(targetPath) {
+  if (!navElement) return;
+  const normalizedPath = normalizePath(targetPath);
+  navLinksForCurrentClass.forEach((link) => {
+    const linkPath = normalizePath(link.getAttribute("href"));
+    const isActive =
+      linkPath === normalizedPath ||
+      (linkPath === "/" && normalizedPath === "/home") ||
+      (linkPath === "/home" && normalizedPath === "/");
+    link.classList.toggle("current", isActive);
+  });
+  const isConfiguratorRoute = normalizedPath.startsWith(
+    "/products/configure-placeholder"
+  );
+  navElement.classList.toggle("transition-configurator", isConfiguratorRoute);
+}
+
+function findLinkTargetFromEvent(clickedElement) {
+  if (!clickedElement) return null;
+  let anchorElement = clickedElement.closest("a");
+  if (anchorElement) {
+    const hrefValue = anchorElement.getAttribute("href");
+    if (
+      hrefValue &&
+      hrefValue.startsWith("/") &&
+      !anchorElement.getAttribute("download") &&
+      anchorElement.getAttribute("target") !== "_blank"
+    ) {
+      return anchorElement;
+    }
+  }
+  return null;
+}
+
+// --- Main Navigation Function ---
+async function navigateTo(
+  targetPath,
+  shouldUpdateHistory = true,
+  animateTransition = true
+) {
+  const normalizedTargetPath = normalizePath(targetPath);
+
+  if (isNavigating) {
+    if (normalizedTargetPath === navigatingToPathCurrently) {
+      return;
+    }
+
+    pendingNavigationArgs = [
+      targetPath,
+      shouldUpdateHistory,
+      animateTransition,
+    ];
+    return;
+  }
+
+  if (
+    shouldUpdateHistory &&
+    normalizedTargetPath === currentPath &&
+    pageContainerElement.innerHTML.trim() !== ""
+  ) {
+    dispatchRouterEvent("router:scroll-top", { url: targetPath });
+    if (window.scrollY !== 0) window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+
+  const targetPageMeta =
+    PAGES_METADATA[normalizedTargetPath] || PAGES_METADATA["/"];
+  if (!targetPageMeta) {
+    console.error("No metadata for path:", normalizedTargetPath);
+    if (pageContainerElement)
+      pageContainerElement.innerHTML = "<h2>Page Not Found</h2>";
+    return;
+  }
+
+  isNavigating = true;
+  navigatingToPathCurrently = normalizedTargetPath;
+
+  mainContentElement.classList.add("segue");
+  document.body.classList.add("segue");
+
+  const previousPageMetaForAnim = PAGES_METADATA[currentPath] || {
+    position: 0,
+  };
+
+  const animationDirection =
+    (previousPageMetaForAnim.position || 0) < (targetPageMeta.position || 0)
+      ? -1
+      : 1;
+  const outAnimationClass = animationDirection < 0 ? "out-pop" : "out";
+  const inAnimationClass = animationDirection < 0 ? "in-pop" : "in";
+
+  dispatchRouterEvent("router:will-change-url", { url: targetPath });
+  updateNavigationLinkStates(normalizedTargetPath);
+
+  if (
+    currentPath === "/products" &&
+    navElement &&
+    targetPageMeta.navigation_inverted !== undefined
+  ) {
+    setTimeout(() => {
+      navElement.classList.toggle(
+        "inverted",
+        targetPageMeta.navigation_inverted
+      );
+    }, 200);
+  }
+
+  if (
+    animateTransition &&
+    pageContainerElement &&
+    pageContainerElement.innerHTML.trim() !== ""
+  ) {
+    await new Promise((resolve) => {
+      mainContentElement.classList.remove("in", "in-pop", "out", "out-pop");
+      mainContentElement.addEventListener("animationend", resolve, {
+        once: true,
+      });
+      mainContentElement.classList.add(outAnimationClass);
+    });
+  }
+
+  let pageHtmlContent = "";
+  const cachedContent = pageDataCache[normalizedTargetPath];
+
+  if (cachedContent && cachedContent !== "pending") {
+    pageHtmlContent = cachedContent;
+  } else {
+    try {
+      if (!targetPageMeta.partial)
+        throw new Error(`No partial defined for ${normalizedTargetPath}`);
+      pageDataCache[normalizedTargetPath] = "pending";
+      const response = await fetch(targetPageMeta.partial);
+      if (!response.ok)
+        throw new Error(
+          `Fetch failed: ${response.statusText} for ${targetPageMeta.partial}`
+        );
+      pageHtmlContent = await response.text();
+      pageDataCache[normalizedTargetPath] = pageHtmlContent;
+    } catch (error) {
+      console.error("Failed to load page content for", targetPath, error);
+      pageHtmlContent = "<h2>Error Loading Page</h2>";
+      delete pageDataCache[normalizedTargetPath];
+    }
+  }
+
+  removePreviousPageStyles();
+
+  if (pageContainerElement) pageContainerElement.innerHTML = pageHtmlContent;
+  window.scrollTo({ top: 0 });
+
+  if (shouldUpdateHistory && currentPath !== normalizedTargetPath) {
+    history.pushState(
+      { path: normalizedTargetPath, position: targetPageMeta.position },
+      targetPageMeta.title,
+      targetPath
+    );
+  }
+
+  applyCurrentPageStylesAndMeta();
+
+  currentPath = normalizedTargetPath;
+
+  if (targetPageMeta) document.title = targetPageMeta.title;
+
+  dispatchRouterEvent("router:did-update-content", { url: targetPath });
+
+  if (animateTransition) {
+    mainContentElement.classList.remove(outAnimationClass);
+    mainContentElement.classList.remove("in", "in-pop");
+    void mainContentElement.offsetWidth;
+    mainContentElement.classList.add(inAnimationClass);
+    await new Promise((resolve) => {
+      mainContentElement.addEventListener(
+        "animationend",
+        () => {
+          mainContentElement.classList.remove(inAnimationClass);
+          resolve();
+        },
+        { once: true }
+      );
+    });
+  } else {
+    mainContentElement.classList.remove("in", "in-pop", "out", "out-pop");
+  }
+
+  dispatchRouterEvent("router:did-change-url", { url: targetPath });
+  currentPath = normalizedTargetPath;
+
+  isNavigating = false;
+  navigatingToPathCurrently = null;
+
+  clearTimeout(segueTimeoutId);
+
+  segueTimeoutId = setTimeout(() => {
+    mainContentElement.classList.remove("segue");
+    document.body.classList.remove("segue");
+    document.body.style.backgroundColor = "";
+  }, 10);
+
+  if (pendingNavigationArgs.length > 0) {
+    const nextNavArgs = pendingNavigationArgs.shift();
+    setTimeout(() => navigateTo(...nextNavArgs), 0);
+  }
+
+  if (pendingNavigationArgs.length > 0) {
+    const argsForNextCall = pendingNavigationArgs;
+    pendingNavigationArgs = [];
+
+    setTimeout(() => navigateTo(...argsForNextCall), 0);
+  }
+}
+
+function setupMainNavigationBehavior() {
+  if (!navElement) return;
+  if (toggleButton) {
+    toggleButton.addEventListener("click", () => {
+      navElement.classList.toggle("collapsed");
+      document.body.style.overflow = navElement.classList.contains("collapsed")
+        ? ""
+        : "hidden";
+    });
+  }
+  window.addEventListener("router:will-change-url", () => {
+    if (
+      navElement &&
+      !navElement.classList.contains("collapsed") &&
+      window.innerWidth <= 768
+    ) {
+      navElement.classList.add("collapsed");
+      document.body.style.overflow = "";
+    }
+  });
+  const modelsMenuItemLink = navElement.querySelector(
+    "a.backyard-menu-item-models"
+  );
+  if (modelsMenuItemLink) {
+    const modelsMenuItemLi = modelsMenuItemLink.closest("li.main-nav-item");
+    const hoverTarget = modelsMenuItemLi || modelsMenuItemLink;
+    hoverTarget.addEventListener("mouseenter", () => {
+      if (
+        !window.matchMedia("(pointer: coarse)").matches &&
+        window.innerWidth > 768
+      ) {
+        navElement.classList.add("main-nav-hover-models");
+      }
+    });
+  }
+  navElement.addEventListener("mouseleave", () => {
+    if (!window.matchMedia("(pointer: coarse)").matches) {
+      navElement.classList.remove("main-nav-hover-models");
+    }
+  });
+  const otherTopLevelLinks = navElement.querySelectorAll(
+    ".main-nav-list-container > ul > li > a:not(.backyard-menu-item-models)"
+  );
+  otherTopLevelLinks.forEach((link) => {
+    link.addEventListener("mouseenter", () => {
+      if (
+        !window.matchMedia("(pointer: coarse)").matches &&
+        window.innerWidth > 768
+      ) {
+        navElement.classList.remove("main-nav-hover-models");
+      }
+    });
+  });
+  navElement.addEventListener("touchmove", function (event) {
+    event.preventDefault();
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.body.classList.remove("no-javascript");
+  document.body.classList.add("interactive");
+  document.documentElement.classList.add("loaded");
+
+  setupMainNavigationBehavior();
+
+  const initialPath = normalizePath(location.pathname);
+  currentPath = initialPath;
+  previousRoutePathForStyles = initialPath;
+
+  const initialPageMeta = PAGES_METADATA[initialPath] || PAGES_METADATA["/"];
+
+  applyCurrentPageStylesAndMeta();
+  updateNavigationLinkStates(initialPath);
+
+  if (initialPageMeta) {
+    history.replaceState(
+      { path: initialPath, position: initialPageMeta.position },
+      initialPageMeta.title,
+      location.href
+    );
+  }
+
+  if (pageContainerElement.innerHTML.trim() === "") {
+    navigateTo(initialPath, false, false);
+  } else {
+    window.dispatchEvent(
+      new CustomEvent("router:did-update-content", {
+        detail: { url: initialPath },
+      })
+    );
+    window.dispatchEvent(
+      new CustomEvent("router:did-change-url", { detail: { url: initialPath } })
+    );
+    if (mainContentElement) {
+      mainContentElement.classList.remove(
+        "in",
+        "in-pop",
+        "out",
+        "out-pop",
+        "segue"
+      );
+    }
+    document.body.classList.remove("segue");
+  }
+
+  document.body.addEventListener("click", (event) => {
+    const anchor = findLinkTargetFromEvent(event.target);
+    if (anchor) {
+      if (toggleButton && toggleButton.contains(event.target)) return;
+      event.preventDefault();
+      const targetPath = new URL(anchor.href, location.origin).pathname;
+      navigateTo(targetPath, true, true);
+    }
+  });
+
+  window.addEventListener("popstate", (event) => {
+    const path = event.state
+      ? event.state.path
+      : normalizePath(location.pathname);
+    navigateTo(path, false, false);
+  });
+
+  window.addEventListener("mousemove", (event) => {
+    const linkElement = findLinkTargetFromEvent(event.target);
+    if (linkElement) {
+      (async function preloadPageData(path) {
+        const normalizedPath = normalizePath(path);
+        if (!pageDataCache[normalizedPath]) {
+          pageDataCache[normalizedPath] = "pending";
+          try {
+            const pageMetaForPreload = PAGES_METADATA[normalizedPath];
+            if (pageMetaForPreload && pageMetaForPreload.partial) {
+              const response = await fetch(pageMetaForPreload.partial);
+              if (response.ok) {
+                pageDataCache[normalizedPath] = await response.text();
+              } else {
+                delete pageDataCache[normalizedPath];
+              }
+            } else {
+              delete pageDataCache[normalizedPath];
+            }
+          } catch (error) {
+            console.warn("failed to preload page", path, error);
+            delete pageDataCache[normalizedPath];
+          }
+        }
+      })(linkElement.getAttribute("href"));
+    }
+  });
+});
+
+window.addEventListener("load", () => {
+  document.body.classList.add("complete");
+});

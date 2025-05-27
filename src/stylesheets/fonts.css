@@ -1,0 +1,39 @@
+@font-face {
+    font-family: regola-light;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/assets/fonts/regola-light.woff2) format("woff2");
+    font-display: block;
+}
+
+@font-face {
+    font-family: regola-book;
+    font-style: normal;
+    font-weight: 400;
+    src: url(../../assets/fonts/regola-book.woff2) format("woff2");
+    font-display: block;
+}
+
+@font-face {
+    font-family: regola-regular;
+    font-style: normal;
+    font-weight: 400;
+    src: url(../../assets/fonts/regola-regular.woff2) format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: regola-book-oblique;
+    font-style: normal;
+    font-weight: 400;
+    src: url(../../assets/fonts/regola-book-oblique.woff2) format("woff2");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: regola-medium;
+    font-style: normal;
+    font-weight: 400;
+    src: url(../../assets/fonts/regola-medium.woff2) format("woff2");
+    font-display: swap;
+}

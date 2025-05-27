@@ -1,0 +1,2446 @@
+@import 'fonts.css';
+@import 'sections/hero.css';
+@import 'footer.css';
+
+/* ******************** */
+/* Base Styles          */
+/* ******************** */
+
+/* CSS Custom Properties (Variables) */
+:root {
+    --color-blue: #0096f7;
+    --color-blue-10: rgba(0, 150, 247, 0.1);
+    --color-blue-20: rgba(0, 150, 247, 0.2);
+    --color-blue-white-20: #33abf9;
+    --color-blue-white-6: #0f9cf7;
+    --color-blue-black-6: #008de8;
+    /* --- */
+    --color-white-80: rgba(255, 255, 255, 0.8);
+    --color-white-60: rgba(255, 255, 255, 0.6);
+    --color-white-40: rgba(255, 255, 255, 0.4);
+    /* --- */
+    --color-black-80: rgba(0, 0, 0, 0.8);
+    --color-black-60: rgba(0, 0, 0, 0.6);
+    --color-black-40: rgba(0, 0, 0, 0.4);
+    --color-black-20: rgba(0, 0, 0, 0.2);
+    --color-black-12: rgba(0, 0, 0, 0.12);
+    --color-black-10: rgba(0, 0, 0, 0.1);
+    --color-black-6: rgba(0, 0, 0, 0.06);
+    --color-black-4: rgba(0, 0, 0, 0.04);
+    --color-black-2: rgba(0, 0, 0, 0.02);
+    /* --- */
+    --color-biege: #fdfdf7;
+    --color-biege-darker: #f7f7f0;
+    /* --- */
+    --color-bone-white: #f6f7f5;
+    --color-driftwood: #dadad9;
+    --color-parchment: #d7d5cb;
+    --color-evergreen: #375033;
+    --color-dark-bronze: #2e2e2c;
+    --color-metallic-silver: #dadad9;
+    --color-red: #ff4000;
+    --color-orange: #ffbd00;
+
+    /* Layout Variables */
+    --center-column-max-width: 1600px;
+    --modern-grid-column-gutter: 24px;
+    --modern-grid-column-width: calc((100vw - 11 * var(--modern-grid-column-gutter) - var(--modern-grid-column-margin) * 2) / 12);
+    --modern-grid-column-width-fixed-column: calc((min(100vw, var(--center-column-max-width)) - 11 * var(--modern-grid-column-gutter) - var(--modern-grid-column-margin) * 2) / 12);
+    --modern-grid-column-margin: 54px;
+
+    /* Component-specific Variables (Three Sizes) */
+    --three-sizes-h: 920;
+    --three-sizes-v: 190;
+}
+
+/* Color Utility Classes        */
+.color-blue {
+    color: var(--color-blue);
+}
+
+.color-text-100 {
+    color: #000;
+}
+
+.color-text-80 {
+    color: var(--color-black-80);
+}
+
+.color-text-60 {
+    color: var(--color-black-60);
+}
+
+.color-text-40 {
+    color: var(--color-black-40);
+}
+
+.color-text-20 {
+    color: var(--color-black-20);
+}
+
+.color-white {
+    color: #fff;
+}
+
+.color-white-80 {
+    color: var(--color-white-80);
+}
+
+.color-white-60 {
+    color: var(--color-white-60);
+}
+
+.color-white-40 {
+    color: var(--color-white-40);
+}
+
+.color-red {
+    color: var(--color-red);
+}
+
+/* Button Styles        */
+
+/* Base Button Reset & Rounded Button Default */
+a.button-rounded,
+button {
+    /* General button reset */
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: 0;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: background .2s, border-color .2s;
+    appearance: none;
+}
+
+.button-rounded {
+    display: inline-block;
+    padding: 11px 18px 13px !important;
+    border: 1px solid transparent;
+    border-radius: 24px !important;
+    font-family: regola-book, sans-serif !important;
+    font-size: 14px !important;
+
+}
+
+.button-rounded-12 {
+    border-radius: 12px !important;
+}
+
+/* Rounded Button Variants */
+.button-rounded-grey {
+    border-color: #f7f7f7 !important;
+    color: var(--color-blue) !important;
+    background-color: #f7f7f7 !important;
+
+}
+
+.button-rounded-blue {
+    border-color: var(--color-blue) !important;
+    color: #fff !important;
+    background-color: var(--color-blue) !important;
+}
+
+/* Button Hover & Active States */
+@media (hover:hover) {
+    .button-rounded-grey:hover {
+        border-color: #ffffff !important;
+        color: var(--color-blue) !important;
+        background-color: #fff !important;
+    }
+
+    .button-rounded-blue:hover {
+        border-color: var(--color-blue-white-20) !important;
+        background-color: var(--color-blue-white-20) !important;
+    }
+
+    .button-rounded-blue-outline:hover {
+        opacity: .5;
+    }
+}
+
+@media (max-width:768px) and (hover:hover) {
+
+    /* Mobile hover specificity */
+    .newsroom-internal-share a:hover {
+        /* This seems specific to newsroom, consider moving */
+        background: rgba(0, 0, 0, .03);
+    }
+
+    .button-rounded-blue:hover {
+        /* Overriding general hover for mobile */
+        border-color: var(--color-blue) !important;
+        background-color: var(--color-blue) !important;
+
+    }
+}
+
+.button-rounded-blue:active {
+    border-color: var(--color-blue-black-6) !important;
+    background-color: var(--color-blue-black-6) !important;
+
+}
+
+/* Button Responsive Adjustments */
+@media (max-width:768px) {
+    .button-rounded {
+        padding: 12px 18px !important;
+
+    }
+
+    .button-rounded-blue:active {
+        /* Overriding general active for mobile */
+        border-color: var(--color-blue) !important;
+        background-color: var(--color-blue) !important;
+
+    }
+}
+
+/* Button Disabled State */
+.button-rounded-blue:disabled {
+    border: 1px solid rgba(0, 0, 0, .1) !important;
+    color: rgba(0, 0, 0, .2) !important;
+    background-color: transparent !important;
+    pointer-events: none !important;
+}
+
+/* Outline Button Variants */
+.button-rounded-blue-outline {
+    border-color: var(--color-blue) !important;
+    color: var(--color-blue) !important;
+    background-color: transparent !important;
+}
+
+.button-rounded-white-outline {
+    border-color: #fff !important;
+    color: #fff !important;
+    background-color: transparent !important;
+}
+
+/* Transparent Button Variant */
+.button-rounded-transparent {
+    border: var(--color-black-60) 1px solid !important;
+    color: var(--color-black-60) !important;
+    background-color: transparent !important;
+}
+
+@media screen and (min-width:800px) and (hover:hover) {
+    .button-rounded-transparent:hover {
+        color: var(--color-black-80) !important;
+        background-color: var(--color-black-2) !important;
+    }
+
+    .button-rounded-transparent:active {
+        background-color: var(--color-black-10) !important;
+    }
+}
+
+@media screen and (min-width:800px) {
+
+    /* Active state for non-hover devices */
+    .button-rounded-transparent:active {
+        background-color: var(--color-black-10) !important;
+    }
+}
+
+/* Black Button Variant */
+.button-rounded-black {
+    border-color: #000 !important;
+    color: #fff !important;
+    background-color: #000 !important;
+}
+
+/* Configurator Button (Specific use-case button) */
+.button-configurator {
+    display: flex;
+    align-items: center;
+    color: var(--color-black-60);
+    background: var(--color-black-4);
+    cursor: pointer;
+    transition: opacity .2s;
+    gap: 12px;
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+}
+
+@media (hover:hover) {
+    .button-rounded-black:hover {
+        border-color: #333 !important;
+        background-color: #333 !important;
+    }
+
+    .button-configurator:hover {
+        background: var(--color-black-2);
+    }
+
+    .button-inner-navigation:hover {
+        /* Inner Navigation Button Hover */
+        color: rgba(0, 0, 0, .8);
+        background-color: #fff;
+    }
+}
+
+/* Submit Button (Specific use-case button) */
+.button-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 57px;
+    box-sizing: border-box;
+    border-radius: 12px !important;
+    gap: 8px;
+}
+
+/* Loading State for Buttons */
+.button-loading {
+    pointer-events: none;
+}
+
+/* Squared Button Modifier */
+.button-squared {
+    /* Modifier for .button-rounded */
+    padding: 9px 15px 11px !important;
+    margin-bottom: 2px;
+    border-radius: 12px !important;
+    box-shadow: 0 .5px 2px 0 rgba(0, 0, 0, .12);
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+/* Inner Navigation Button (Specific use-case button) */
+.button-inner-navigation {
+    padding: 12px 18px;
+    border-radius: 12px;
+    color: rgba(0, 0, 0, .6);
+    background: rgba(0, 0, 0, .04);
+    box-shadow: 0 .5px 2px 0 rgba(0, 0, 0, .12);
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+@media (max-width:768px) {
+    .button-inner-navigation {
+        padding: 9px 15px;
+    }
+
+    /* .modern-grid .m-column-0 - Belongs to modern-grid layout */
+}
+
+/* Dividers             */
+
+.divider {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, .1);
+}
+
+.middot-divider {
+    padding: 0 .5ch;
+}
+
+/* General Utilities    */
+
+/* Border Radius Utilities */
+.rounded-4 {
+    border-radius: 4px !important;
+}
+
+.rounded-6 {
+    border-radius: 6px !important;
+}
+
+/* Shadow Utility */
+.drop-shadow {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .2);
+}
+
+/* Visibility Utilities */
+.mobile-visible {
+    /* Content visible only on mobile */
+    display: none;
+}
+
+@media (max-width:768px) {
+    .m-rounded-0 {
+        /* Mobile specific: no border radius */
+        border-radius: 0 !important;
+    }
+
+    .drop-shadow {
+        /* Adjusted shadow for mobile */
+        box-shadow: 0 .5px 1.5px 0 rgba(0, 0, 0, .12);
+    }
+
+    .mobile-hidden {
+        /* Content hidden on mobile */
+        display: none !important;
+    }
+
+    .mobile-visible {
+        /* Content visible only on mobile */
+        display: unset;
+        /* Or display: block / inline / etc. as appropriate */
+    }
+}
+
+@media (min-width:768px) {
+
+    /* Content hidden on desktop (and tablet if not overridden) */
+    .desktop-hidden {
+        display: none !important;
+    }
+}
+
+@media (max-width:1024px) {
+
+    /* Content hidden on tablet and mobile */
+    .tablet-hidden {
+        display: none !important;
+    }
+
+    /* .doorway-item:nth-child(3) - Specific to Doorway component */
+}
+
+/* Sizing Utility */
+.full-width {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Flexbox Utilities */
+.flex {
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+/* Gap Utilities */
+.gap-8 {
+    gap: 8px;
+}
+
+.gap-16 {
+    gap: 16px;
+}
+
+/* Flex Grow Utility */
+.flex-1 {
+    flex: 1;
+}
+
+/* ******************** */
+/* Global HTML Elements (Reset/Defaults) */
+/* ******************** */
+
+body,
+/* Combined with html below */
+html {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    min-height: fill-available;
+    /* For Safari */
+    min-height: -webkit-fill-available;
+    /* For Safari */
+    padding: 0;
+    margin: 0;
+    background: #000;
+    /* Default background, often overridden */
+    font-family: regola-book;
+    /* Default font */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    /* Remove tap highlight on mobile */
+}
+
+html {
+    /* Additional html specific from end of file */
+    overflow-x: clip;
+    overflow-y: auto;
+    /* height: fill-available; Already above */
+    /* height: -webkit-fill-available; Already above */
+    opacity: 1;
+    /* Initial opacity */
+}
+
+body {
+    /* Additional body specific from end of file */
+    background: var(--color-biege);
+    /* Overrides the #000 from html,body */
+    transition: background-color .6s;
+}
+
+/* Segue specific body style */
+body.segue {
+    overflow-x: clip;
+}
+
+/* Global element resets from end of file */
+* {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+.nobr {
+    /* No-break utility */
+    white-space: nowrap;
+}
+
+p {
+    margin: 0;
+    -webkit-margin-before: 0;
+    /* Safari/Chrome specific margin reset */
+    -webkit-margin-after: 0;
+    /* Safari/Chrome specific margin reset */
+    orphans: 2;
+    /* Prevent single lines at the end of a paragraph at top of new page/column */
+}
+
+input {
+    font-family: regola-book, sans-serif;
+    /* Ensure inputs inherit font */
+    -webkit-font-smoothing: antialiased;
+}
+
+img {
+    font-family: regola-book, sans-serif;
+    /* In case of alt text */
+}
+
+a {
+    color: var(--color-blue);
+    /* Default link color */
+    cursor: pointer;
+    text-decoration: none;
+    /* Remove default underline */
+}
+
+button:focus {
+    /* Default focus style for buttons */
+    outline-color: #000;
+}
+
+/* No-javascript Utility */
+.no-javascript img[data-src] {
+    /* Hide images meant for JS lazy loading */
+    display: none;
+}
+
+main {
+    /* Main content wrapper */
+    position: relative;
+    /* For positioning child elements or animations */
+}
+
+/* Default page background for specific contexts */
+.slides {
+    width: 100vw;
+    height: auto;
+}
+
+.slide {
+    /* Individual slide in section */
+    position: relative;
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
+}
+
+.slides p {
+    /* Reset paragraph margins within slides */
+    padding: 0;
+    margin: 0;
+}
+
+.home-basement {
+    flex-direction: column;
+    min-height: unset;
+    background: var(--color-biege);
+}
+
+/* ******************** */
+/* Navigation           */
+/* ******************** */
+nav {
+    position: fixed;
+    z-index: 8999;
+    top: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 var(--modern-grid-column-margin);
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+@media (min-width:768px) and (max-width:1024px) {
+
+    /* Tablet specific nav padding */
+    /* .slides .jealousy .h3 - Belongs to Gallery carousel component */
+    nav {
+        padding: 0 3.75vw;
+    }
+}
+
+nav button,
+nav ul,
+nav ul>li>a {
+    /* Make specific nav elements interactive */
+    pointer-events: all;
+}
+
+/* Prevent scrolling when mobile nav is open */
+html:has(nav:not(.collapsed)) {
+    overflow: clip;
+}
+
+nav .logo {
+    position: relative;
+    top: 1px;
+    width: var(--modern-grid-column-width);
+    pointer-events: all;
+}
+
+nav .logo img {
+    /* width: 102%; */
+    /* Commented out, using min-width */
+    min-width: 110px;
+}
+
+@media (max-width:768px) {
+
+    /* Mobile Navigation Styles */
+    @keyframes nav-list-mobile-appear {
+
+        /* Animation for mobile nav list */
+        from {
+            transform: translateY(-100%);
+        }
+
+        to {
+            transform: none;
+        }
+    }
+
+    nav {
+        top: 31px;
+        /* Adjust top position */
+        height: 100%;
+        /* Occupy full height for overlay */
+    }
+
+    nav li {
+        /* Hide desktop list items initially for transition */
+        opacity: 0 !important;
+        /* Consider removing !important */
+    }
+
+    nav:not(.collapsed) {
+        /* When nav is open */
+        pointer-events: all;
+        /* Allow interaction with overlay */
+    }
+
+    nav:not(.collapsed) ul {
+        /* Animate list appearance */
+        animation: .8s cubic-bezier(.16, 1, .3, 1) nav-list-mobile-appear;
+    }
+
+    nav:not(.collapsed) li {
+        /* Fade in list items */
+        opacity: 1 !important;
+        /* Consider removing !important */
+        transition: opacity .4s .2s;
+    }
+
+    nav .logo {
+        /* Reposition logo for mobile overlay */
+        position: absolute;
+        z-index: 10;
+        /* Above nav list */
+        top: unset;
+        bottom: 20px;
+        left: 50%;
+        display: flex;
+        align-items: center;
+        width: auto;
+        height: 42px;
+        padding: 0 12px;
+        border-radius: 12px;
+        opacity: 0;
+        /* Hidden when nav is collapsed */
+        transition: none;
+        /* No transition by default, controlled by :not(.collapsed) */
+        transform: translateX(-50%) translateY(-100%);
+        /* Initial off-screen position */
+    }
+
+    nav:not(.collapsed) .logo {
+        /* Show logo when nav is open */
+        opacity: 1;
+        transition: opacity .4s .2s;
+    }
+
+    nav .logo img {
+        width: 67px;
+        /* Smaller logo for mobile */
+    }
+
+    nav.collapsed .logo {
+        /* Ensure logo is hidden and non-interactive when collapsed */
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+nav img {
+    /* General image transition within nav */
+    transition: filter .4s;
+}
+
+nav.inverted img {
+    /* Inverted color scheme for nav images */
+    filter: invert(100%);
+}
+
+nav img:active {
+    /* Active state for nav images */
+    opacity: .75;
+}
+
+/* Main Navigation List (Desktop) */
+nav .main-nav-list {
+    position: absolute;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 var(--modern-grid-column-margin);
+}
+
+nav ul {
+    /* Navigation list (ul) styling */
+    display: flex;
+    padding: 25px 36px 26px;
+    margin: 0 auto;
+    /* Centering */
+    background: rgba(255, 255, 255, .4);
+    /* Semi-transparent background */
+    list-style-type: none;
+    transition: background .4s, clip-path .2s;
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    /* Frosted glass effect */
+    backdrop-filter: blur(18px) saturate(1.5);
+    clip-path: inset(12px 12px 12px 12px round 12px);
+    /* Rounded clipped corners */
+    will-change: opacity;
+    /* Performance hint */
+}
+
+body:not(.complete) nav ul {
+    /* Disable transition during initial load */
+    transition: none;
+}
+
+/* Hide nav during configurator or its transition */
+.configurator nav ul,
+nav.transition-configurator ul,
+nav.transition-configurator ul+ol {
+    /* Hiding main nav and sub-nav */
+    opacity: 0 !important;
+    /* Consider removing !important */
+    pointer-events: none;
+}
+
+.configurator nav ul a,
+nav.transition-configurator ul a,
+nav.transition-configurator ul+ol a {
+    pointer-events: none;
+}
+
+nav.inverted ul {
+    /* Inverted color scheme for nav list */
+    background: rgba(0, 0, 0, .2);
+}
+
+nav ul a,
+/* Nav link styling */
+nav ul+ol a {
+    /* Sub-nav link styling */
+    line-height: 100%;
+    color: rgba(0, 0, 0, .6);
+    transition: color .4s;
+    font-family: regola-book, sans-serif;
+    font-size: 15px;
+    text-decoration: none;
+}
+
+nav.inverted ul a,
+nav.inverted ul+ol a {
+    /* Inverted color scheme for links */
+    color: rgba(255, 255, 255, .8);
+}
+
+@media (max-width:768px) {
+
+    /* Mobile Navigation List (Overlay) */
+    nav .main-nav-list {
+        position: static;
+        /* Reset absolute positioning */
+        display: block;
+        width: 100%;
+        padding: 0;
+    }
+
+    nav ul {
+        /* Fullscreen overlay style for mobile nav list */
+        position: absolute;
+        top: -36px;
+        /* Initial position above viewport */
+        left: 0;
+        overflow: hidden;
+        /* Prevent content overflow during animation */
+        flex-direction: column;
+        /* Stack list items */
+        width: 100%;
+        height: 110vh;
+        /* Slightly taller than viewport */
+        min-height: 110vh;
+        min-height: -webkit-fill-available;
+        box-sizing: border-box;
+        padding: 72px 0 15px;
+        /* Top padding for toggle button space */
+        border-radius: 0;
+        /* No rounded corners for fullscreen */
+        background: 0 0;
+        /* Transparent background, relies on backdrop-filter */
+        transform: none;
+        /* Reset desktop transform */
+        font-size: 30px;
+        /* Larger font size for mobile nav */
+        -webkit-backdrop-filter: blur(36px);
+        /* Stronger blur for overlay */
+        backdrop-filter: blur(36px);
+        clip-path: none;
+        /* No clipping */
+    }
+
+    nav.collapsed ul {
+        /* Styles for the "hamburger" icon container when collapsed */
+        top: -18px;
+        left: 12px;
+        width: 45px;
+        height: 42px;
+        min-height: unset;
+        padding-top: 0;
+        border-radius: 16px;
+    }
+
+    /* Show nav elements in configurator on mobile (if needed) */
+    .configurator nav ul,
+    nav.transition-configurator ul {
+        opacity: 1 !important;
+        /* Consider removing !important */
+    }
+
+    .configurator nav ul a,
+    nav.transition-configurator ul a {
+        pointer-events: all;
+    }
+
+    nav ul a {
+        /* Mobile nav link styling */
+        position: relative;
+        left: -2px;
+        /* Fine-tune alignment */
+        line-height: 100%;
+        color: #000;
+        letter-spacing: -.9px;
+        font-family: regola-light, sans-serif;
+        font-size: 30px;
+    }
+
+    nav.inverted ul a {
+        /* Inverted color for mobile nav links */
+        color: #fff;
+    }
+
+    nav ul a.current {
+        /* Current page link style for mobile */
+        font-family: regola-book, sans-serif;
+        /* Bolder font for current */
+    }
+}
+
+nav ul a.current,
+/* Current page link style (Desktop) */
+nav ul+ol a.current {
+    color: #000;
+}
+
+@media (hover:hover) {
+
+    /* Hover states for desktop nav links */
+    nav ul a:hover,
+    nav ul+ol a:hover {
+        color: #000;
+    }
+
+    nav.inverted ul a:hover,
+    nav.inverted ul+ol a:hover {
+        color: #fff;
+    }
+}
+
+nav.inverted ul a.current,
+nav.inverted ul+ol a.current {
+    color: #fff;
+}
+
+nav ul .main-nav-item {
+    overflow: hidden;
+    width: 0;
+    height: 1em;
+    margin: 0;
+    opacity: 0;
+}
+
+nav ul .main-nav-item-mobile {
+    display: none;
+}
+
+nav ul .pages-menu-item {
+    /* Spacing for "Pages" dropdown trigger or similar */
+    margin-left: 24px;
+}
+
+.main-nav-item {
+    overflow: visible !important;
+    width: auto !important;
+    margin-left: 24px !important;
+    opacity: 1 !important;
+}
+
+nav .nav-cta {
+    opacity: 0;
+    transition: opacity .4s;
+    pointer-events: none;
+}
+
+.get-in-touch {
+    display: none;
+}
+
+nav .nav-cta {
+    opacity: 1;
+    pointer-events: all;
+}
+
+@media (max-width:768px) {
+
+    nav ul li {
+        padding: 8px 0 10px;
+        margin: 0 22px !important;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    nav.inverted ul li {
+        border-color: rgba(255, 255, 255, .4);
+    }
+
+    nav ul li:first-child {
+        border-top: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    nav.inverted ul li:first-child {
+        border-top: 1px solid rgba(255, 255, 255, .4);
+    }
+
+    nav.collapsed ul li {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    nav ul .main-nav-item {
+        height: auto;
+    }
+
+    .root:not(.showroom) nav ul .main-nav-item,
+    nav ul .main-nav-item-mobile {
+        display: list-item;
+    }
+
+    .root:not(.showroom) nav ul .main-nav-item {
+        margin-left: 0;
+    }
+
+    nav .nav-cta {
+        position: absolute;
+        z-index: -1;
+        top: -18px;
+        right: 12px;
+        font-size: 12px;
+    }
+
+    nav:not(.collapsed) .nav-cta {
+        /* Hide when nav is open */
+        opacity: 0;
+        transition: opacity .2s;
+    }
+}
+
+@media screen and (min-width:800px) {
+    nav .nav-cta:hover {
+        color: rgba(255, 255, 255, .8);
+    }
+}
+
+@media (max-width:768px) and (hover:hover) {
+
+    nav .nav-cta:active,
+    nav .nav-cta:hover {
+        color: #fff;
+        background: var(--color-blue);
+        filter: none;
+        /* Reset filter if any */
+    }
+}
+
+/* ******************** */
+/* Call to Action button */
+/* ******************** */
+
+.nav-cta.multiunit,
+.multiunit .nav-cta {
+    /* Default state is hidden/overridden */
+    display: none;
+}
+
+.multiunit .home-cta.multiunit {
+    display: block;
+}
+
+/* Sub Navigation / Dropdown Menu (Desktop) */
+.multi-menu nav ul,
+.main-nav-hover-models ul {
+    clip-path: inset(12px 12px 12px 12px round 12px 12px 0 0);
+}
+
+@media (max-width:768px) {
+    nav .toggle {
+        display: block !important;
+    }
+
+    nav ul ol {
+        display: none;
+        padding: 0;
+        margin: 8px 0;
+        list-style-type: none;
+    }
+
+    nav ul ol {
+        display: block;
+    }
+
+    nav ul ol li {
+        /* Sub-menu item styling */
+        padding-bottom: 0;
+        padding-left: 16px;
+        margin: 0 !important;
+        /* Consider removing !important */
+        border: none;
+        /* No border for sub-items */
+    }
+
+    .multi-menu nav ul {
+        /* Reset clip-path for mobile */
+        clip-path: none;
+    }
+
+    .main-nav-list-container {
+        /* Ensure static positioning on mobile */
+        position: static !important;
+        /* Consider removing !important */
+    }
+}
+
+.main-nav-list-container {
+    /* Container for main nav and sub-nav */
+    position: relative;
+    /* For positioning sub-nav */
+    top: 44px;
+    /* Offset from top of nav bar */
+    display: flex;
+    flex-direction: column;
+}
+
+nav ul+ol {
+    /* Sub-navigation list (ol after ul) */
+    display: flex;
+    justify-content: center;
+    padding: 34px 36px;
+    margin: 0;
+    opacity: 0;
+    /* Hidden by default, shown on hover/active state */
+    background: rgba(255, 255, 255, .4);
+    list-style-type: none;
+    transition: opacity .2s, background .4s;
+    transform: translateY(-24.5px);
+    /* Overlap with main nav slightly */
+    pointer-events: none;
+    gap: 24px;
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    backdrop-filter: blur(18px) saturate(1.5);
+    clip-path: inset(12px 12px 12px 12px round 0 0 12px 12px);
+    /* Clip bottom part */
+}
+
+.multi-menu nav ul+ol,
+.main-nav-hover-models ul+ol {
+    opacity: 1;
+    pointer-events: all;
+}
+
+nav.inverted ul+ol {
+    background: rgba(77, 77, 77, .3);
+}
+
+nav ul+ol li {
+    /* Sub-nav list item */
+    position: relative;
+    /* For positioning hover/active indicator */
+}
+
+nav ul+ol span {
+    /* Indicator for sub-nav item (hover/active) */
+    position: absolute;
+    z-index: -1;
+    /* Behind the link text */
+    top: -8px;
+    left: -12px;
+    width: 100%;
+    height: 100%;
+    padding: 8px 12px;
+    border-radius: 32px;
+    /* Pill shape */
+    opacity: 0;
+    /* Hidden by default */
+    background: #fff;
+    transition: background-color .4s;
+    /* Mismatch with opacity transition? */
+}
+
+nav.inverted ol span {
+    background: #000;
+}
+
+nav ul+ol li:has(a:hover) span {
+    /* Show indicator on hover */
+    opacity: .4;
+    /* Semi-transparent */
+}
+
+nav ul+ol li a.current {
+    /* Current sub-nav item link */
+    color: #000;
+}
+
+nav ul+ol li a.current+span {
+    /* Style indicator for current sub-nav item */
+    opacity: 1;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, .08);
+}
+
+/* Horizontal Rule in Nav (Desktop, between main and sub-nav) */
+nav hr {
+    display: none;
+    /* Hidden by default */
+    appearance: none;
+}
+
+.multi-menu nav hr,
+/* Show HR for models sub-nav */
+nav.main-nav-hover-models hr {
+    position: absolute;
+    top: 49px;
+    /* Align with bottom of main nav items */
+    left: 12px;
+    display: block;
+    width: calc(100% - 24px);
+    /* Span width of nav container */
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, .2);
+    /* Light HR */
+}
+
+nav.inverted hr {
+    /* Inverted HR color */
+    border-top: 1px solid rgba(255, 255, 255, .2);
+}
+
+/* Ensure no bottom border for specific  menu item layout */
+.main-nav-item:has(+ :not(.main-nav-item)) {
+    border-bottom: none;
+}
+
+@media (max-width:768px) {
+
+    /* Hide desktop sub-nav and HR on mobile */
+    nav ul+ol {
+        display: none;
+    }
+
+    nav hr {
+        display: none !important;
+        /* Consider removing !important */
+    }
+
+    nav .financing-get-your-rate-button.button-rounded {
+        /* Position for mobile */
+        top: -18px;
+    }
+}
+
+@media (min-width:768px) {
+    nav .button-rounded {
+        /* Adjust padding for nav buttons on desktop */
+        top: 0;
+        /* Reset mobile top */
+        padding: 13.5px 18px 14px !important;
+        /* Consider removing !important */
+        transform: translateX(18px) translateY(.5px);
+        /* Fine-tune position */
+    }
+}
+
+/* Nav Toggle Icon ("Hamburger" and "X") */
+nav .toggle {
+    position: absolute;
+    z-index: 1;
+    top: -18px;
+    left: 12px;
+    display: none;
+    width: 45px;
+    height: 42px;
+    border: none;
+    background: 0 0;
+    cursor: pointer;
+    pointer-events: all;
+    appearance: none;
+}
+
+nav .toggle>span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 15px;
+    height: 1.5px;
+    transform: translateX(-50%) translateY(-50%);
+    pointer-events: none;
+}
+
+/* Positioning for top/bottom lines of hamburger */
+nav.collapsed .toggle span.top {
+    margin-top: -3.5px;
+}
+
+nav.collapsed .toggle span.bottom {
+    margin-top: 3.5px;
+}
+
+nav .toggle span span {
+    /* Actual line elements */
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 1.5px;
+    background: #000;
+    transform: rotate(45deg) scaleX(1.2);
+}
+
+nav.inverted .toggle span span {
+    /* Inverted line color */
+    background: #fff;
+}
+
+.complete nav .toggle span span {
+    transition: transform .2s .1s;
+}
+
+nav .toggle span.bottom span {
+    /* Bottom part of "X" */
+    transform: rotate(-45deg) scaleX(1.2);
+}
+
+nav.collapsed .toggle span span {
+    /* Transform lines to hamburger when collapsed */
+    transition: transform .2s;
+    transform: none;
+    /* Reset to straight lines */
+}
+
+
+/* ******************** */
+/* Page Transitions / Animations */
+/* ******************** */
+main.out {
+    /* Page leaving animation */
+    animation: .4s ease-in forwards out;
+}
+
+main.out-pop {
+    /* Alternative page leaving animation */
+    animation: .4s ease-in forwards out-pop;
+}
+
+main.in {
+    /* Page entering animation */
+    animation: .8s cubic-bezier(0, .635, .345, 1) in;
+}
+
+main.in-pop {
+    /* Alternative page entering animation */
+    animation: .8s cubic-bezier(0, .635, .345, 1) in-pop;
+}
+
+/* Keyframe definitions for page transitions */
+@keyframes out {
+    80% {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 0;
+        transform: translate3d(-10px, 0, 0);
+        /* Slide out left */
+    }
+}
+
+@keyframes out-pop {
+    80% {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 0;
+        transform: translate3d(10px, 0, 0);
+        /* Slide out right */
+    }
+}
+
+@keyframes out-pop-fade {
+
+    /* Fade out only */
+    80%,
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes in {
+    from {
+        opacity: 0;
+        transform: translate3d(max(1vw, 25px), 0, 0);
+        /* Slide in from right */
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes in-pop {
+    from {
+        opacity: 0;
+        transform: translate3d(min(-1vw, -25px), 0, 0);
+        /* Slide in from left */
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes in-fade {
+
+    /* Fade in only */
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ******************** */
+/* Layout Systems & Utilities */
+/* ******************** */
+
+/* Modal Grid Layout */
+.modal-grid {
+    display: grid;
+    grid-column-gap: 24px;
+    grid-template-columns: repeat(6, 1fr);
+}
+
+.modal-grid-half-gap {
+    /* Modifier for modal grid */
+    grid-column-gap: 12px;
+}
+
+/* Modal Grid Column Span Utilities */
+.modal-grid-column-3 {
+    grid-column: span 3;
+}
+
+.modal-grid-column-4 {
+    grid-column: span 4;
+}
+
+.modal-grid-column-6 {
+    grid-column: span 6;
+}
+
+/* Modern Grid System */
+.modern-grid {
+    display: grid;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 var(--modern-grid-column-margin);
+    grid-column-gap: var(--modern-grid-column-gutter);
+    grid-template-columns: repeat(12, 1fr);
+}
+
+/* Modern Grid Column Utilities (Default - 12 columns) */
+.modern-grid .column-0 {
+    /* Utility to hide a column, or placeholder? */
+    display: none;
+}
+
+.modern-grid .column-1 {
+    grid-column: span 1;
+}
+
+.modern-grid .column-2 {
+    grid-column: span 2;
+}
+
+.modern-grid .column-3 {
+    grid-column: span 3;
+}
+
+.modern-grid .column-4 {
+    grid-column: span 4;
+}
+
+.modern-grid .column-5 {
+    grid-column: span 5;
+}
+
+.modern-grid .column-6 {
+    grid-column: span 6;
+}
+
+.modern-grid .column-7 {
+    grid-column: span 7;
+}
+
+.modern-grid .column-8 {
+    grid-column: span 8;
+}
+
+.modern-grid .column-9 {
+    grid-column: span 9;
+}
+
+.modern-grid .column-10 {
+    grid-column: span 10;
+}
+
+.modern-grid .column-11 {
+    grid-column: span 11;
+}
+
+.modern-grid .column-12 {
+    grid-column: span 12;
+}
+
+/* Modern Grid Responsive Adjustments (Large screens / Desktop - breakpoint 1024px) */
+@media (max-width:1024px) {
+
+    /* Large Screen Column Utilities (Still 12 columns, but variables might change) */
+    .modern-grid .l-column-1 {
+        grid-column: span 1;
+    }
+
+    .modern-grid .l-column-2 {
+        grid-column: span 2;
+    }
+
+    .modern-grid .l-column-3 {
+        grid-column: span 3;
+    }
+
+    .modern-grid .l-column-4 {
+        grid-column: span 4;
+    }
+
+    .modern-grid .l-column-5 {
+        grid-column: span 5;
+    }
+
+    .modern-grid .l-column-6 {
+        grid-column: span 6;
+    }
+
+    .modern-grid .l-column-7 {
+        grid-column: span 7;
+    }
+
+    .modern-grid .l-column-8 {
+        grid-column: span 8;
+    }
+
+    .modern-grid .l-column-9 {
+        grid-column: span 9;
+    }
+
+    .modern-grid .l-column-10 {
+        grid-column: span 10;
+    }
+
+    .modern-grid .l-column-11 {
+        grid-column: span 11;
+    }
+
+    .modern-grid .l-column-12 {
+        grid-column: span 12;
+    }
+
+    /* Updating CSS Variables for Large Screens */
+    :root {
+        /* This re-declaration of :root inside a media query might be problematic for some linters/parsers. Ideally, variables are defined once globally. */
+        --center-column-max-width: 100vw;
+        /* Adjusted for responsive behavior */
+        --modern-grid-column-gutter: 15px;
+        --modern-grid-column-margin: 30px;
+        --modern-grid-column-width-fixed-column: var(--modern-grid-column-width);
+        /* This still relies on the globally defined --modern-grid-column-width, which might not be what's intended here. */
+    }
+
+    .l-modern-grid-full {
+        /* Modifier for full-width grid on large screens */
+        padding: 0;
+    }
+}
+
+/* Modern Grid Responsive Adjustments (Medium screens / Mobile - breakpoint 768px) */
+@media (max-width:768px) {
+
+    /* Medium Screen Column Utilities (6 columns) */
+    .modern-grid .m-column-1 {
+        grid-column: span 1;
+    }
+
+    .modern-grid .m-column-2 {
+        grid-column: span 2;
+    }
+
+    .modern-grid .m-column-3 {
+        grid-column: span 3;
+    }
+
+    .modern-grid .m-column-4 {
+        grid-column: span 4;
+    }
+
+    .modern-grid .m-column-5 {
+        grid-column: span 5;
+    }
+
+    .modern-grid .m-column-6 {
+        grid-column: span 6;
+    }
+
+    /* Hiding columns specifically for mobile, if not covered by m-column-0 */
+    .modern-grid .m-column-0 {
+        /* Explicitly hide for mobile */
+        display: none;
+    }
+
+    /* Removed duplicated .m-column-7 to .m-column-12 as grid is 6 columns on mobile */
+
+    /* Updating CSS Variables for Medium Screens */
+    :root {
+        /* Another :root re-declaration. Review for best practice. */
+        --center-column-max-width: 100vw;
+        --modern-grid-column-gutter: 10px;
+        --modern-grid-column-width: calc((100vw - 5 * var(--modern-grid-column-gutter) - var(--modern-grid-column-margin) * 2) / 6);
+        /* Adjusted for 6 columns */
+        --modern-grid-column-width-fixed-column: var(--modern-grid-column-width);
+        --modern-grid-column-margin: 26px;
+    }
+
+    /* Modern Grid structure for 6 columns on mobile */
+    .modern-grid {
+        display: grid;
+        /* Already defined, but fine for specificity */
+        padding: 0 var(--modern-grid-column-margin);
+        grid-column-gap: var(--modern-grid-column-gutter);
+        grid-template-columns: repeat(6, 1fr);
+        /* Key change for 6 columns */
+    }
+
+    .m-modern-grid-full {
+        /* Modifier for full-width grid on medium screens */
+        padding: 0;
+    }
+}
+
+.modern-grid-full {
+    /* General full-width modifier for modern grid */
+    padding: 0;
+}
+
+/* Page Section Container (Centering content) */
+.page-section-container {
+    max-width: var(--center-column-max-width);
+    margin: 0 auto;
+}
+
+
+/* ******************** */
+/* Spacing Utilities    */
+/* ******************** */
+
+.spacer-0 {
+    height: 0;
+}
+
+.spacer-4 {
+    height: 4px;
+}
+
+.spacer-8 {
+    height: 8px;
+}
+
+.spacer-12 {
+    height: 12px;
+}
+
+.spacer-16 {
+    height: 16px;
+}
+
+.spacer-18 {
+    height: 18px;
+}
+
+.spacer-24 {
+    height: 24px;
+}
+
+.spacer-32 {
+    height: 32px;
+}
+
+.spacer-36 {
+    height: 36px;
+}
+
+.spacer-50 {
+    height: 50px;
+}
+
+.spacer-64 {
+    height: 64px;
+}
+
+.spacer-72 {
+    height: 72px;
+}
+
+.spacer-80 {
+    height: 80px;
+}
+
+.spacer-100 {
+    height: 100px;
+}
+
+.spacer-120 {
+    height: 120px;
+}
+
+.spacer-150 {
+    height: 150px;
+}
+
+/* Responsive Spacing Utilities (Mobile) */
+@media (max-width:768px) {
+    .m-spacer-0 {
+        /* Can also be used to hide spacers on mobile */
+        display: none;
+        /* Or height: 0; */
+    }
+
+    .m-spacer-4 {
+        height: 4px;
+    }
+
+    .m-spacer-8 {
+        height: 8px;
+    }
+
+    .m-spacer-12 {
+        height: 12px;
+    }
+
+    .m-spacer-16 {
+        height: 16px;
+    }
+
+    .m-spacer-24 {
+        height: 24px;
+    }
+
+    .m-spacer-32 {
+        height: 32px;
+    }
+
+    .m-spacer-36 {
+        height: 36px;
+    }
+
+    .m-spacer-50 {
+        height: 50px;
+    }
+
+    .m-spacer-64 {
+        height: 64px;
+    }
+
+    .m-spacer-72 {
+        height: 72px;
+    }
+
+    .m-spacer-80 {
+        height: 80px;
+    }
+
+    .m-spacer-100 {
+        height: 100px;
+    }
+
+    .m-spacer-120 {
+        height: 120px;
+    }
+
+    .m-spacer-150 {
+        height: 150px;
+    }
+
+    .m-spacer-flexible {
+        /* Flexible spacer for mobile */
+        flex: 1;
+    }
+}
+
+/* Responsive Spacing Utilities (Tablet/Large Screens) */
+@media (max-width:1024px) {
+
+    /* Assuming these are for tablets or larger screens if not mobile */
+    .l-spacer-0 {
+        display: none;
+        /* Or height: 0; */
+    }
+
+    .l-spacer-16 {
+        height: 16px;
+    }
+
+    .l-spacer-36 {
+        height: 36px;
+    }
+
+    .l-spacer-50 {
+        height: 50px;
+    }
+
+    .l-spacer-64 {
+        height: 64px;
+    }
+
+    .l-spacer-72 {
+        height: 72px;
+    }
+
+    .l-spacer-80 {
+        height: 80px;
+    }
+
+    .l-spacer-100 {
+        height: 100px;
+    }
+
+    .l-spacer-120 {
+        height: 120px;
+    }
+
+    /* .l-type-* styles will be moved to Typography Utilities */
+}
+
+/* ******************** */
+/* Typography Utilities & Resets */
+/* ******************** */
+
+/* Heading Reset */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    padding: 0;
+    margin: 0;
+    font-weight: 300;
+    /* Default light weight for headings */
+}
+
+h1 {
+    /* Specific h1 styling */
+    text-wrap: balance;
+    /* Improves readability of multi-line h1s */
+}
+
+/* Font Feature Utilities */
+.prop-nums {
+    /* Proportional numbers */
+    font-feature-settings: "pnum" on, "onum" on;
+}
+
+.mono-nums {
+    /* Monospaced numbers */
+    font-variant-numeric: lining-nums tabular-nums slashed-zero;
+}
+
+.alt,
+/* Alternate character set utility */
+.type-alt {
+    font-feature-settings: "ss01" on;
+}
+
+/* Text Alignment & Wrapping Utilities */
+.type-center {
+    text-align: center;
+}
+
+.type-balanced {
+    text-wrap: balance;
+}
+
+.type-mono {
+    /* Monospaced (tabular) numbers, lining */
+    font-feature-settings: "tnum", "lnum";
+}
+
+/* Semantic Type Scale Utilities (Size, Line Height, Letter Spacing, Font Family) */
+/* Consider if !important is truly necessary for all these properties */
+.type-120 {
+    line-height: 100% !important;
+    letter-spacing: -.033em !important;
+    font-family: regola-light, sans-serif !important;
+    font-size: clamp(96px, 8.3vw, 120px) !important;
+}
+
+.type-96 {
+    line-height: 100% !important;
+    letter-spacing: -.041em !important;
+    font-family: regola-light, sans-serif !important;
+    font-size: clamp(72px, 6.67vw, 120px) !important;
+    /* Max clamp value is 120px, same as type-120. Typo? */
+}
+
+.type-72 {
+    line-height: 110% !important;
+    letter-spacing: -.041em !important;
+    font-family: regola-light, sans-serif !important;
+    font-size: clamp(64px, 5vw, 72px) !important;
+}
+
+.type-60 {
+    line-height: 110% !important;
+    letter-spacing: -.033em !important;
+    font-family: regola-light, sans-serif !important;
+    font-size: clamp(54px, 4.16vw, 60px) !important;
+}
+
+.type-48 {
+    line-height: 112% !important;
+    letter-spacing: -.04em !important;
+    font-family: regola-light, sans-serif !important;
+    font-size: clamp(42px, 3.3vw, 48px) !important;
+}
+
+.type-42 {
+    line-height: 114% !important;
+    letter-spacing: -.047em !important;
+    font-family: regola-light, sans-serif !important;
+    font-size: clamp(36px, 3vw, 48px) !important;
+    /* Max clamp value is 48px, like type-48. Intentional? */
+}
+
+.type-36 {
+    line-height: 116%;
+    letter-spacing: -.027em;
+    font-family: regola-light, sans-serif;
+    font-size: clamp(30px, 2.9vw, 36px);
+}
+
+.type-30 {
+    line-height: 120% !important;
+    letter-spacing: -.014em !important;
+    font-family: regola-book, sans-serif !important;
+    font-size: clamp(26px, 2vw, 30px) !important;
+}
+
+.type-30-light {
+    line-height: 120% !important;
+    letter-spacing: -.014em !important;
+    font-family: regola-light, sans-serif !important;
+    font-size: clamp(26px, 2vw, 30px) !important;
+}
+
+.type-24 {
+    line-height: 125% !important;
+    font-family: regola-book, sans-serif !important;
+    font-size: clamp(21px, 1.6vw, 24px) !important;
+}
+
+.type-24-light {
+    line-height: 125% !important;
+    letter-spacing: 0 !important;
+    font-family: regola-light, sans-serif !important;
+    font-size: clamp(21px, 1.6vw, 26px) !important;
+    /* Max clamp value 26px, name is type-24. Intentional? */
+}
+
+.type-21 {
+    line-height: 125% !important;
+    letter-spacing: -.01em !important;
+    font-family: regola-book, sans-serif !important;
+    font-size: clamp(18px, 5.6vw, 21px) !important;
+}
+
+.type-21-light {
+    line-height: 125% !important;
+    letter-spacing: -.01em !important;
+    font-family: regola-light, sans-serif !important;
+    font-size: clamp(18px, 5.6vw, 21px) !important;
+}
+
+.type-18 {
+    line-height: 133% !important;
+    font-family: regola-book, sans-serif !important;
+    font-size: clamp(16px, 1.25vw, 18px) !important;
+}
+
+.type-18-light {
+    line-height: 133% !important;
+    font-family: regola-light, sans-serif !important;
+    font-size: clamp(16px, 1.25vw, 18px) !important;
+}
+
+.type-15 {
+    line-height: 120% !important;
+    font-family: regola-book, sans-serif !important;
+    font-size: 15px !important;
+}
+
+.type-14 {
+    line-height: 128% !important;
+    letter-spacing: 0 !important;
+    font-family: regola-book, sans-serif !important;
+    font-size: 14px !important;
+}
+
+.type-12 {
+    line-height: 133% !important;
+    font-family: regola-book, sans-serif !important;
+    font-size: 12px !important;
+}
+
+/* Text Transform & Font Family Override Utilities */
+.type-caps {
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    font-family: regola-regular, sans-serif !important;
+}
+
+.type-light {
+    /* Utility to force regola-light font */
+    font-family: regola-light, sans-serif !important;
+}
+
+/* Responsive Typography Utilities (Large Screens / Desktop - breakpoint 1024px) */
+@media (max-width:1024px) {
+    /* .l-spacer-* utilities already moved to Spacing */
+
+    .l-type-72 {
+        line-height: 110% !important;
+        letter-spacing: -.04em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(64px, 5vw, 72px) !important;
+    }
+
+    .l-type-60 {
+        line-height: 110% !important;
+        letter-spacing: -.04em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(54px, 4.16vw, 60px) !important;
+    }
+
+    .l-type-48 {
+        line-height: 110% !important;
+        letter-spacing: -.04em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(42px, 12.8vw, 48px) !important;
+        /* Large vw for mid-range. Review. */
+    }
+
+    .l-type-42 {
+        line-height: 110% !important;
+        letter-spacing: -.03em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(36px, 3vw, 48px) !important;
+    }
+
+    .l-type-36 {
+        line-height: 117% !important;
+        letter-spacing: -.04em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(32px, 9.6vw, 36px) !important;
+        /* Large vw for mid-range. Review. */
+    }
+
+    .l-type-30-light {
+        line-height: 120% !important;
+        letter-spacing: -.02em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(26px, 2vw, 30px) !important;
+    }
+
+    .l-type-24-light {
+        line-height: 125% !important;
+        letter-spacing: -.01em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(21px, 6.4vw, 24px) !important;
+        /* Large vw for mid-range. Review. */
+    }
+
+    .l-type-21-light {
+        line-height: 125% !important;
+        letter-spacing: -.01em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(18px, 5.6vw, 21px) !important;
+        /* Large vw for mid-range. Review. */
+    }
+
+    .l-type-18-light {
+        line-height: 133% !important;
+        letter-spacing: 0 !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(16px, 4.8vw, 18px) !important;
+        /* Large vw for mid-range. Review. */
+    }
+
+    .l-type-15 {
+        line-height: 140% !important;
+        font-family: regola-book, sans-serif !important;
+        font-size: 15px !important;
+    }
+
+    .l-type-14 {
+        line-height: 140% !important;
+        letter-spacing: 0 !important;
+        font-family: regola-book, sans-serif !important;
+        font-size: 14px !important;
+    }
+}
+
+/* Responsive Typography Utilities (Medium / Mobile - breakpoint 768px) */
+@media (max-width:768px) {
+    .m-type-96 {
+        line-height: 100% !important;
+        letter-spacing: -.04em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(72px, 25.6vw, 96px) !important;
+        /* Very large vw. Review. */
+    }
+
+    .m-type-72 {
+        line-height: 110% !important;
+        letter-spacing: -.04em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(64px, 5vw, 72px) !important;
+        /* vw seems small compared to others in this breakpoint. */
+    }
+
+    .m-type-60 {
+        line-height: 110% !important;
+        letter-spacing: -.04em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(54px, 4.16vw, 68px) !important;
+        /* Max clamp 68px for m-type-60. Typo? */
+    }
+
+    .m-type-48 {
+        line-height: 110% !important;
+        letter-spacing: -.04em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(42px, 12.8vw, 48px) !important;
+        /* Large vw. Review. */
+    }
+
+    .m-type-42 {
+        line-height: 110% !important;
+        letter-spacing: -.04em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(36px, 11.2vw, 42px) !important;
+        /* Large vw. Review. */
+    }
+
+    .m-type-36 {
+        line-height: 117% !important;
+        letter-spacing: -.04em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(32px, 9.6vw, 36px) !important;
+        /* Large vw. Review. */
+    }
+
+    .m-type-30-light {
+        line-height: 120% !important;
+        letter-spacing: -.02em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(26px, 2vw, 30px) !important;
+        /* vw seems small. */
+    }
+
+    .m-type-24 {
+        line-height: 125% !important;
+        letter-spacing: 0 !important;
+        font-family: regola-book, sans-serif !important;
+        font-size: clamp(21px, 6.4vw, 24px) !important;
+        /* Large vw. Review. */
+    }
+
+    .m-type-24-light {
+        line-height: 125% !important;
+        letter-spacing: -.02em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(21px, 6.4vw, 24px) !important;
+        /* Large vw. Review. */
+    }
+
+    .m-type-21 {
+        line-height: 125% !important;
+        letter-spacing: -.01em !important;
+        font-family: regola-book, sans-serif !important;
+        font-size: clamp(18px, 5.6vw, 21px) !important;
+        /* Large vw. Review. */
+    }
+
+    .m-type-21-light {
+        line-height: 125% !important;
+        letter-spacing: -.01em !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(18px, 5.6vw, 21px) !important;
+        /* Large vw. Review. */
+    }
+
+    .m-type-18 {
+        line-height: 133% !important;
+        letter-spacing: 0 !important;
+        font-family: regola-book, sans-serif !important;
+        font-size: clamp(16px, 4.8vw, 18px) !important;
+        /* Large vw. Review. */
+    }
+
+    .m-type-18-light {
+        line-height: 133% !important;
+        letter-spacing: 0 !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: clamp(16px, 4.8vw, 18px) !important;
+        /* Large vw. Review. */
+    }
+
+    .m-type-15 {
+        line-height: 140% !important;
+        letter-spacing: 0 !important;
+        font-family: regola-book, sans-serif !important;
+        font-size: 15px !important;
+    }
+
+    .m-type-15-light {
+        line-height: 140% !important;
+        letter-spacing: 0 !important;
+        font-family: regola-light, sans-serif !important;
+        font-size: 15px !important;
+    }
+
+    .m-type-16 {
+        /* Added rule, not in l-type. Consistent? */
+        line-height: 133% !important;
+        letter-spacing: 0 !important;
+        font-family: regola-book, sans-serif !important;
+        font-size: 16px !important;
+    }
+
+    .m-type-14 {
+        line-height: 140% !important;
+        letter-spacing: 0 !important;
+        font-family: regola-book, sans-serif !important;
+        font-size: 14px !important;
+    }
+
+    .m-type-12 {
+        line-height: 140% !important;
+        letter-spacing: 0 !important;
+        font-family: regola-book, sans-serif !important;
+        font-size: 12px !important;
+    }
+
+    /* Mobile Specific Text Alignment */
+    .m-type-left {
+        text-align: left;
+    }
+
+    /* .type-light already defined globally */
+
+    .m-type-center {
+        text-align: center;
+    }
+}
+
+/* Specific Font Family Overrides */
+.type-regola-regular {
+    font-family: regola-regular, sans-serif !important;
+}
+
+.type-regola-book-oblique {
+    font-family: regola-book-oblique, sans-serif !important;
+}
+
+/* Line Height Modifier */
+.type-24-light.leading-150 {
+    /* Example of a specific modifier */
+    line-height: 150% !important;
+}
+
+/* ******************** */
+/* Models / Products page */
+/* ******************** */
+
+
+.segue .models-overview-header {
+    padding: 0 10vw;
+    margin: 0 -10vw;
+}
+
+.slide.models-overview-header {
+    display: block;
+    min-height: unset;
+    color: #fff;
+    background: #000;
+}
+
+
+/* ******************** */
+/* Home / Intro text section */
+/* ******************** */
+
+/* Intro Section (Text Animation) */
+.slides .intro {
+    display: grid;
+    overflow: hidden;
+    min-height: unset;
+    box-sizing: border-box;
+    padding: 0 var(--modern-grid-column-margin);
+    background: #fff;
+    grid-template-columns: repeat(12, [col-start] 1fr);
+    gap: 22px;
+    will-change: transform;
+}
+
+.slides .intro-container {
+    position: relative;
+    grid-column: col-start 2 / span 10;
+}
+
+
+/* User selection disabled for animated text elements */
+.slides .intro h1,
+.slides .intro h2 br,
+.slides .intro h2 img {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.slides .intro h1,
+.slides .intro h2 {
+    position: relative;
+    line-height: 96%;
+    letter-spacing: -.04em;
+    font-family: regola-light, sans-serif;
+    font-size: 6.67vw;
+}
+
+.slides .intro-container h1,
+.slides .intro-container h2 {
+    white-space: nowrap;
+}
+
+.slides .intro .intro-title {
+    position: absolute;
+    left: -200vw;
+    max-width: 100vw;
+    white-space: wrap;
+    pointer-events: none;
+}
+
+.slides .intro h2 .part {
+    display: inline;
+    color: var(--color-black-10);
+    transition: color .3s;
+}
+
+.slides .intro h2 .part.active {
+    color: #000;
+    transition: color .6s;
+}
+
+.slides .intro h2 span[data-sentence].active {
+    color: #000;
+    transition: color 1s;
+}
+
+/* Disable transitions during page segue */
+.segue.slides .intro h2 .part {
+    transition: none;
+}
+
+.slides .intro h2 br.mobile {
+    display: none;
+    /* Hidden on desktop */
+}
+
+.slides .intro h2 strong {
+    color: #000;
+}
+
+/* Image integrated into animated text (Elevation) */
+.slides .intro h2 .intro-elevation {
+    position: relative;
+    z-index: -1;
+    display: inline-block;
+}
+
+.slides .intro h2 .intro-elevation.mobile {
+    display: none;
+    /* Hidden on desktop */
+}
+
+.slides .intro h2 .intro-elevation img {
+    position: absolute;
+    top: -1.3em;
+    height: 1.65em;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+}
+
+.slides .intro h2 .intro-elevation img.loaded {
+    opacity: 1;
+}
+
+/* Call to Action in Intro Section */
+.slides .intro .intro-cta {
+    grid-column: col-start 2 / span 10;
+}
+
+.slides .intro .intro-cta .not-in-ca {
+    display: flex;
+    gap: 10px;
+}
+
+@media (max-width:768px) {
+    .slides .intro {
+        padding: 0 24px;
+        grid-template-columns: repeat(6, [col-start] 1fr);
+        gap: 12px;
+    }
+
+    .slides .intro h2 {
+        margin: 0;
+        font-size: 11vw;
+        grid-column: col-start 1/span 6;
+    }
+
+    .slides .intro-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+        margin-top: 40px;
+        grid-column: unset;
+    }
+
+    .slides .intro .intro-cta {
+        padding-right: 24px;
+        margin: 0;
+        grid-column: col-start 1/span 6;
+    }
+
+    .slides .intro h2 br.mobile {
+        display: unset;
+    }
+
+    .slides .intro h2 br {
+        display: none;
+    }
+
+    .slides .intro h2 .intro-elevation.mobile {
+        display: inline-block;
+    }
+
+    .slides .intro h2 .intro-elevation.desktop {
+        display: none;
+    }
+}
