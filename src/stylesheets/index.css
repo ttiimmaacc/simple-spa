@@ -1,5 +1,6 @@
 @import 'fonts.css';
 @import 'sections/hero.css';
+@import 'sections/doorway.css';
 @import 'footer.css';
 
 /* ******************** */
@@ -570,7 +571,7 @@ main {
     margin: 0;
 }
 
-.home-basement {
+.basement {
     flex-direction: column;
     min-height: unset;
     background: var(--color-biege);
