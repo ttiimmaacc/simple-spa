@@ -73,3 +73,9 @@
         aspect-ratio: 351/216;
     }
 }
+
+@media (max-width: 1024px) {
+    .doorway-item:nth-child(3) {
+        display: none;
+    }
+}
