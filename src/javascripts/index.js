@@ -25,6 +25,7 @@ const PAGES_METADATA = {
   },
 };
 
+// --- Global Variables ---
 const pageContainerElement = document.querySelector("main .page");
 const mainContentElement = document.querySelector("main");
 const navElement = document.querySelector("nav.main-nav");
@@ -43,6 +44,192 @@ let pendingNavigationArgs = [];
 let isNavigating = false;
 let currentPath = normalizePath(location.pathname);
 let navigatingToPathCurrently = null;
+
+// Ensure window.App exists
+window.App = window.App || {};
+
+// --- Section: Gallery ---
+
+// App.createGallery function
+window.App.createGallery = function () {
+  const galleryContainer = document.querySelector(".gallery");
+  if (null === galleryContainer) return () => {}; // Return a no-op cleanup if element not found
+
+  // Prevent re-initialization if already processed (important for createDestroy pattern)
+  if (galleryContainer.dataset.init === "true") return () => {};
+  galleryContainer.dataset.init = "true"; // Mark as initialized
+
+  const radioInputs = Array.from(document.querySelectorAll(".gallery input"));
+  let resetTimeoutId;
+
+  function resetToDefaultSelection() {
+    galleryContainer.classList.remove("active");
+    radioInputs.forEach((input, index) => (input.checked = index === 1));
+  }
+
+  function handleGalleryClick(event) {
+    clearTimeout(resetTimeoutId);
+    resetTimeoutId = setTimeout(resetToDefaultSelection, 10000);
+    galleryContainer.classList.add("active");
+
+    if ("INPUT" === event.target.nodeName || "UL" === event.target.nodeName)
+      return;
+
+    let currentIndex = radioInputs.findIndex((input) => input.checked === true);
+    currentIndex = currentIndex < radioInputs.length - 1 ? currentIndex + 1 : 0;
+    radioInputs.forEach(
+      (input, index) => (input.checked = index === currentIndex)
+    );
+  }
+
+  galleryContainer.addEventListener("click", handleGalleryClick);
+
+  // Return a cleanup function
+  return function cleanupGallery() {
+    galleryContainer.removeEventListener("click", handleGalleryClick);
+    clearTimeout(resetTimeoutId);
+    delete galleryContainer.dataset.init; // Clean up the init flag
+  };
+};
+
+// --- Section: Cards  ---
+
+// App.createInteriorPhotoCards function
+window.App.createInteriorPhotoCards = function () {
+  const cards = document.querySelectorAll(".interior-carousel-cards-card");
+  if (cards.length === 0) return () => {}; // Return no-op cleanup if no cards
+
+  const cleanupFns = []; // Store individual card cleanup for later
+
+  cards.forEach((cardElement, index, allCards) => {
+    // Prevent re-initialization for each card
+    if (cardElement.dataset.init === "true") return;
+    cardElement.dataset.init = "true";
+
+    function handleCardClick(event) {
+      const isMobile = window.innerWidth < 768;
+      const { left: cardLeft, width: cardWidth } =
+        cardElement.getBoundingClientRect();
+      const cardCenter = Math.round(cardLeft + 0.5 * cardWidth);
+      const distanceToViewportCenter = 0.5 * window.innerWidth - cardCenter;
+
+      if (
+        !isMobile &&
+        distanceToViewportCenter > 0 &&
+        Math.abs(distanceToViewportCenter) > 0.5 * cardWidth
+      ) {
+        // Scroll left
+        event.stopPropagation();
+        cardElement.parentElement.classList.add("scrolling");
+        cardElement.parentElement.scrollTo({
+          left: cardElement.parentElement.scrollLeft - cardElement.clientWidth,
+          behavior: "smooth",
+        });
+      } else if (
+        !isMobile &&
+        distanceToViewportCenter < 0 &&
+        Math.abs(distanceToViewportCenter) > 0.5 * cardWidth
+      ) {
+        // Scroll right
+        event.stopPropagation();
+        cardElement.parentElement.classList.add("scrolling");
+        cardElement.parentElement.scrollTo({
+          left: cardElement.parentElement.scrollLeft + cardElement.clientWidth,
+          behavior: "smooth",
+        });
+      } else if (
+        event.target.classList.contains("interior-carousel-cards-card-images")
+      ) {
+        // Image navigation
+        event.preventDefault();
+        event.stopPropagation();
+        const radioInputs = cardElement.querySelectorAll("input");
+        const currentCheckedIndex = Array.from(radioInputs).findIndex(
+          (input) => input.checked
+        );
+        const nextCheckedIndex =
+          currentCheckedIndex + 1 > radioInputs.length - 1
+            ? 0
+            : currentCheckedIndex + 1;
+        radioInputs.forEach((input, inputIndex) => {
+          input.checked = inputIndex === nextCheckedIndex;
+        });
+      }
+
+      setTimeout(function () {
+        // Update 'current' class on all cards after scroll/click
+        allCards.forEach((cElem) => {
+          const { left: cLeft, width: cWidth } = cElem.getBoundingClientRect();
+          const cCenter = Math.round(cLeft + 0.5 * cWidth);
+          const distToCenter = 0.5 * window.innerWidth - cCenter;
+          cElem.parentElement.classList.remove("scrolling");
+          cElem.classList.toggle(
+            "current",
+            Math.abs(distToCenter) < 0.5 * cWidth
+          );
+        });
+      }, 600);
+    }
+
+    cardElement.addEventListener("click", handleCardClick);
+    cleanupFns.push(() => {
+      cardElement.removeEventListener("click", handleCardClick);
+      delete cardElement.dataset.init;
+    });
+  });
+
+  return function cleanupInteriorPhotoCards() {
+    cleanupFns.forEach((fn) => fn());
+  };
+};
+
+// --- createDestroy function ---
+// Place this function definition before it's used.
+function createDestroy(
+  routeRegex,
+  asyncSetupFunction,
+  destroyEventName = "router:will-change-url"
+) {
+  let cleanupFunction; // This will store the cleanup function returned by asyncSetupFunction
+
+  // Function to initialize the component/feature
+  async function initializeComponent(event) {
+    // Only initialize if the route matches
+    const currentUrl = event?.detail?.url || location.pathname;
+    if (routeRegex.test(currentUrl)) {
+      if (cleanupFunction) {
+        // If there's an existing cleanup function, run it first
+        cleanupFunction();
+        cleanupFunction = undefined;
+      }
+      // Call the async setup function and store its cleanup result
+      cleanupFunction = await asyncSetupFunction();
+    }
+  }
+
+  // Function to handle route changes and potentially initialize the component
+  function handleRouteChange(event) {
+    const currentUrl = event?.detail?.url || location.pathname;
+    if (routeRegex.test(currentUrl)) {
+      // Use setTimeout to ensure DOM is ready and prevent blocking router
+      setTimeout(() => initializeComponent(event), 0);
+    }
+  }
+
+  // Event listener for initial page load
+  document.addEventListener("DOMContentLoaded", handleRouteChange);
+
+  // Event listener for content updates (after router injects new HTML)
+  window.addEventListener("router:did-update-content", handleRouteChange);
+
+  // Event listener to destroy the component before a URL change
+  window.addEventListener(destroyEventName, function destroyComponent() {
+    if (cleanupFunction) {
+      cleanupFunction();
+      cleanupFunction = undefined; // Clear the reference
+    }
+  });
+}
 
 // --- Helper Functions ---
 function dispatchRouterEvent(eventName, detail) {
@@ -427,6 +614,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     document.body.classList.remove("segue");
   }
+
+  // Only initialized when URL matches /, /home, or /home/
+  createDestroy(/^(\/|\/home|\/home\/)$/, function setupGalleryComponents() {
+    return App.createGallery();
+  });
+
+  createDestroy(
+    /^(\/|\/home|\/home\/)$/,
+    function setupInteriorPhotoCardsComponents() {
+      return App.createInteriorPhotoCards();
+    }
+  );
 
   document.body.addEventListener("click", (event) => {
     const anchor = findLinkTargetFromEvent(event.target);

@@ -138,46 +138,46 @@
     object-fit: cover;
 }
 
-.slides .gallery ul:has(input[data-layout=studio]:checked)+.images img:nth-child(2),
-.slides .gallery ul:has(input[data-layout=studio]:checked)+.images img:nth-child(3),
-.slides .gallery ul:has(input[data-layout=studio]:checked)+.images img:nth-child(4),
-.slides .gallery ul:has(input[data-layout=studio]:checked)+.images img:nth-child(5) {
+.slides .gallery ul:has(input[data-layout=tab1]:checked)+.images img:nth-child(2),
+.slides .gallery ul:has(input[data-layout=tab1]:checked)+.images img:nth-child(3),
+.slides .gallery ul:has(input[data-layout=tab1]:checked)+.images img:nth-child(4),
+.slides .gallery ul:has(input[data-layout=tab1]:checked)+.images img:nth-child(5) {
     z-index: 1;
     opacity: 0;
     transition: opacity 1s;
 }
 
-.slides .gallery ul:has(input[data-layout=onebed]:checked)+.images img:first-child,
-.slides .gallery ul:has(input[data-layout=onebed]:checked)+.images img:nth-child(3),
-.slides .gallery ul:has(input[data-layout=onebed]:checked)+.images img:nth-child(4),
-.slides .gallery ul:has(input[data-layout=onebed]:checked)+.images img:nth-child(5) {
+.slides .gallery ul:has(input[data-layout=tab2]:checked)+.images img:first-child,
+.slides .gallery ul:has(input[data-layout=tab2]:checked)+.images img:nth-child(3),
+.slides .gallery ul:has(input[data-layout=tab2]:checked)+.images img:nth-child(4),
+.slides .gallery ul:has(input[data-layout=tab2]:checked)+.images img:nth-child(5) {
     z-index: 1;
     opacity: 0;
     transition: opacity 1s;
 }
 
-.slides .gallery ul:has(input[data-layout=twobed]:checked)+.images img:first-child,
-.slides .gallery ul:has(input[data-layout=twobed]:checked)+.images img:nth-child(2),
-.slides .gallery ul:has(input[data-layout=twobed]:checked)+.images img:nth-child(4),
-.slides .gallery ul:has(input[data-layout=twobed]:checked)+.images img:nth-child(5) {
+.slides .gallery ul:has(input[data-layout=tab3]:checked)+.images img:first-child,
+.slides .gallery ul:has(input[data-layout=tab3]:checked)+.images img:nth-child(2),
+.slides .gallery ul:has(input[data-layout=tab3]:checked)+.images img:nth-child(4),
+.slides .gallery ul:has(input[data-layout=tab3]:checked)+.images img:nth-child(5) {
     z-index: 1;
     opacity: 0;
     transition: opacity 1s;
 }
 
-.slides .gallery ul:has(input[data-layout=xl-8]:checked)+.images img:first-child,
-.slides .gallery ul:has(input[data-layout=xl-8]:checked)+.images img:nth-child(2),
-.slides .gallery ul:has(input[data-layout=xl-8]:checked)+.images img:nth-child(3),
-.slides .gallery ul:has(input[data-layout=xl-8]:checked)+.images img:nth-child(5) {
+.slides .gallery ul:has(input[data-layout=tab4]:checked)+.images img:first-child,
+.slides .gallery ul:has(input[data-layout=tab4]:checked)+.images img:nth-child(2),
+.slides .gallery ul:has(input[data-layout=tab4]:checked)+.images img:nth-child(3),
+.slides .gallery ul:has(input[data-layout=tab4]:checked)+.images img:nth-child(5) {
     z-index: 1;
     opacity: 0;
     transition: opacity 1s;
 }
 
-.slides .gallery ul:has(input[data-layout=xl-10]:checked)+.images img:first-child,
-.slides .gallery ul:has(input[data-layout=xl-10]:checked)+.images img:nth-child(2),
-.slides .gallery ul:has(input[data-layout=xl-10]:checked)+.images img:nth-child(3),
-.slides .gallery ul:has(input[data-layout=xl-10]:checked)+.images img:nth-child(4) {
+.slides .gallery ul:has(input[data-layout=tab5]:checked)+.images img:first-child,
+.slides .gallery ul:has(input[data-layout=tab5]:checked)+.images img:nth-child(2),
+.slides .gallery ul:has(input[data-layout=tab5]:checked)+.images img:nth-child(3),
+.slides .gallery ul:has(input[data-layout=tab5]:checked)+.images img:nth-child(4) {
     z-index: 1;
     opacity: 0;
     transition: opacity 1s;
