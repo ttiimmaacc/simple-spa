@@ -96,7 +96,7 @@ window.App.createGallery = function () {
 
 // App.createInteriorPhotoCards function
 window.App.createInteriorPhotoCards = function () {
-  const cards = document.querySelectorAll(".interior-carousel-cards-card");
+  const cards = document.querySelectorAll(".slider-carousel-cards-card");
   if (cards.length === 0) return () => {}; // Return no-op cleanup if no cards
 
   const cleanupFns = []; // Store individual card cleanup for later
@@ -138,7 +138,7 @@ window.App.createInteriorPhotoCards = function () {
           behavior: "smooth",
         });
       } else if (
-        event.target.classList.contains("interior-carousel-cards-card-images")
+        event.target.classList.contains("slider-carousel-cards-card-images")
       ) {
         // Image navigation
         event.preventDefault();
