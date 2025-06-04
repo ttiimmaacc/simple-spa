@@ -1,5 +1,6 @@
 @import 'fonts.css';
 @import 'sections/hero.css';
+@import 'sections/productcarousel.css';
 @import 'sections/gallerycarousel.css';
 @import 'sections/calltoaction.css';
 @import 'sections/doorway.css';
@@ -35,6 +36,8 @@
     --color-biege: #fdfdf7;
     --color-biege-darker: #f7f7f0;
     /* --- */
+    --color-brushed: #dadad9;
+    --color-black: #2e2e2c;
     --color-bone-white: #f6f7f5;
     --color-driftwood: #dadad9;
     --color-parchment: #d7d5cb;
@@ -52,8 +55,8 @@
     --modern-grid-column-margin: 54px;
 
     /* Component-specific Variables (Three Sizes) */
-    --three-sizes-h: 920;
-    --three-sizes-v: 190;
+    --product-cards-h: 920;
+    --product-cards-v: 190;
 }
 
 /* Color Utility Classes        */

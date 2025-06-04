@@ -17,7 +17,7 @@ const PAGES_METADATA = {
   },
   "/menu": {
     title: "SimpleSPA - Menu",
-    partial: "/src/javascripts/partials/menu.html",
+    partial: "/src/javascripts/partials/products.html",
     class_names: "multi-menu menu-page",
     theme_color: "#000000",
     navigation_inverted: true,
@@ -47,6 +47,364 @@ let navigatingToPathCurrently = null;
 
 // Ensure window.App exists
 window.App = window.App || {};
+
+// --- Section: Product Cards ---
+window.App.createProductCards = function () {
+  const MODEL_NAME_DATA = [
+    "product 1",
+    "product 2",
+    "product 3",
+    "product 4",
+    "product 5",
+  ];
+  const MODEL_PATH_DATA = [
+    "product-1",
+    "product-2",
+    "product-3",
+    "product-4",
+    "product-5",
+  ];
+  const MODEL_DISPLAY_NAMES = [
+    "the product 1",
+    "the product 2",
+    "the product 3",
+    "the product 4",
+    "the <span class='alt'>product</span> 5",
+  ];
+  const MODEL_SUMMARY_DATA = [
+    "4.2 inches. <span></span> 1st detail",
+    "5.4 inches. <span></span> 1st detail <span></span> 2nd detail",
+    "6.9 inches. <span></span> 1st detail <span></span> 2nd detail",
+    "8.0 inches. <span></span> 1st detail <span></span> 2nd detail",
+    "9.5 inches. <span></span> 1st detail <span></span> 2nd detail",
+  ];
+  const COLOR_NAME_DATA = [
+    "bonewhite",
+    "driftwood",
+    "parchment",
+    "evergreen",
+    "dark-bronze",
+  ];
+  const MODEL_COST_DATA = [
+    [1520, 1697],
+    [1700, 1898],
+    [1900, 2121],
+    [2490, 2778],
+    [2770, 3092],
+  ];
+  const LAYOUT_TRANSFORM_RANGES = {
+    desktop: [
+      [0, 0.2, -2.5, 15.75, 31],
+      [0, 0.4, -30, -1, 27.5],
+      [0.2, 0.6, -25, 1.25, 22.5],
+      [0.4, 0.8, -27.75, 0.875, 29.5],
+      [0.6, 1, -25.75, 2.125, 30],
+    ],
+    mobile: [
+      [0, 0.2, -3, 11, 24],
+      [0, 0.4, -24.5, -3, 19],
+      [0.2, 0.6, -18.5, -3, 13],
+      [0.4, 0.8, -20, 0, 21],
+      [0.6, 1, -18, 0, 20],
+    ],
+  };
+  const pagesContainerElement = document.querySelector(
+    ".product-cards-layouts-pages-container"
+  );
+  const layoutSelectorButtons = Array.from(
+    document.querySelectorAll(".product-cards-layouts-selector button")
+  );
+  const layoutPageElements = Array.from(
+    document.querySelectorAll(".product-cards-layouts-pages-page")
+  );
+  const colorSelectorDivs = Array.from(
+    document.querySelectorAll(".product-cards-colors > div")
+  );
+  const pageControlButtons = Array.from(
+    document.querySelectorAll(".product-cards-layouts-pages-controls button")
+  );
+
+  let animationClassTimeoutId;
+  let scrollAnimationFrameId;
+  let scrollWidthCache = 0;
+  let currentLayoutIndex = 0;
+  let currentColorIndicesPerLayout = Array(layoutPageElements.length).fill(0);
+
+  function interpolate(value, inMin, inMax, outMin, outMax) {
+    return outMin + ((value - inMin) / (inMax - inMin)) * (outMax - outMin);
+  }
+
+  function setActiveLayout(layoutIndex, instantScroll = false) {
+    currentLayoutIndex = Math.max(
+      Math.min(layoutIndex, layoutPageElements.length - 1),
+      0
+    );
+    if (pagesContainerElement) {
+      pagesContainerElement.scrollTo({
+        left: currentLayoutIndex * pagesContainerElement.clientWidth,
+        behavior: instantScroll ? "instant" : "smooth",
+      });
+      pagesContainerElement.dispatchEvent(
+        new CustomEvent("change", {
+          detail: { index: currentLayoutIndex },
+        })
+      );
+    }
+    updateDisplayStates(instantScroll);
+  }
+
+  function formatCurrency(amount) {
+    let numAmount = amount;
+    if (Number.isFinite(numAmount) === false) {
+      numAmount = 0;
+    }
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(numAmount);
+  }
+
+  function updateDisplayStates(isInstantUpdate = false) {
+    if (isInstantUpdate) {
+      clearTimeout(animationClassTimeoutId);
+      if (pagesContainerElement)
+        pagesContainerElement.classList.add("without-animation");
+      animationClassTimeoutId = setTimeout(() => {
+        if (pagesContainerElement)
+          pagesContainerElement.classList.remove("without-animation");
+      }, 100);
+    } else {
+      if (pagesContainerElement)
+        pagesContainerElement.classList.remove("without-animation");
+    }
+
+    const roundedLayoutIndex = pagesContainerElement
+      ? Math.max(
+          Math.min(
+            Math.round(
+              (pagesContainerElement.scrollLeft /
+                pagesContainerElement.scrollWidth) *
+                layoutPageElements.length
+            ),
+            layoutPageElements.length - 1
+          ),
+          0
+        )
+      : 0;
+    if (Number.isFinite(roundedLayoutIndex)) {
+      currentLayoutIndex = roundedLayoutIndex;
+      if (pagesContainerElement)
+        pagesContainerElement.dispatchEvent(
+          new CustomEvent("change", { detail: { index: currentLayoutIndex } })
+        );
+    }
+
+    if (0 === scrollWidthCache && pagesContainerElement)
+      scrollWidthCache = pagesContainerElement.scrollWidth;
+    const scrollProgressRatio = pagesContainerElement
+      ? pagesContainerElement.scrollLeft / scrollWidthCache
+      : 0;
+    const responsiveMode = window.innerWidth < 768 ? "mobile" : "desktop";
+
+    layoutPageElements.forEach((pageEl, pageIndex) => {
+      pageEl.classList.toggle("selected", pageIndex === currentLayoutIndex);
+      pageEl.querySelectorAll("img").forEach((imgEl, imgIndex) => {
+        imgEl.classList.toggle(
+          "current",
+          imgIndex === currentColorIndicesPerLayout[pageIndex]
+        );
+      });
+
+      const [
+        scrollStart,
+        scrollEnd,
+        transformStart,
+        transformMid,
+        transformEnd,
+      ] = LAYOUT_TRANSFORM_RANGES[responsiveMode][pageIndex];
+      const midPoint = scrollStart + 0.5 * (scrollEnd - scrollStart);
+      const currentTransformVW =
+        scrollProgressRatio < midPoint
+          ? interpolate(
+              scrollProgressRatio,
+              scrollStart,
+              midPoint,
+              transformStart,
+              transformMid
+            )
+          : interpolate(
+              scrollProgressRatio,
+              midPoint,
+              scrollEnd,
+              transformMid,
+              transformEnd
+            );
+      const imageContainer = pageEl.querySelector(
+        ".product-cards-layouts-pages-image"
+      );
+      if (imageContainer)
+        imageContainer.style.transform = `translate3d(${currentTransformVW}vw, 0, 0)`;
+    });
+
+    layoutSelectorButtons.forEach((button, index) => {
+      button.classList.toggle("selected", index === currentLayoutIndex);
+    });
+    colorSelectorDivs.forEach((div, index) => {
+      div.classList.toggle(
+        "selected",
+        index === currentColorIndicesPerLayout[currentLayoutIndex]
+      );
+    });
+    pageControlButtons.forEach((button, index) => {
+      if (
+        (index === 0 && currentLayoutIndex === 0) ||
+        (index === 1 && currentLayoutIndex === layoutPageElements.length - 1)
+      ) {
+        button.disabled = true;
+      } else {
+        button.disabled = false;
+      }
+    });
+
+    const totalCostElement = document.getElementById(
+      "product-cards-footer-cost-total"
+    );
+    if (totalCostElement)
+      totalCostElement.innerText = formatCurrency(
+        MODEL_COST_DATA[currentLayoutIndex][0]
+      );
+
+    const monthlyCostElement = document.getElementById(
+      "product-cards-footer-cost-monthly"
+    );
+    if (monthlyCostElement)
+      monthlyCostElement.innerText = `${formatCurrency(
+        MODEL_COST_DATA[currentLayoutIndex][1]
+      )}/mo`;
+
+    const configureLinkElement = document.getElementById(
+      "product-cards-footer-configure-link"
+    );
+    if (configureLinkElement) {
+      configureLinkElement.href = `/cta/#${
+        COLOR_NAME_DATA[currentColorIndicesPerLayout[currentLayoutIndex]]
+      }+${MODEL_NAME_DATA[currentLayoutIndex]}`;
+    }
+
+    const exploreLinkElement = document.getElementById(
+      "product-cards-footer-explore-link"
+    );
+    if (exploreLinkElement) {
+      exploreLinkElement.href = `/products/${MODEL_PATH_DATA[currentLayoutIndex]}`;
+      const modelNameSpan = exploreLinkElement.querySelector(
+        ".product-cards-footer-explore-link-model"
+      );
+      if (modelNameSpan)
+        modelNameSpan.innerHTML = MODEL_DISPLAY_NAMES[currentLayoutIndex];
+    }
+
+    const summaryElement = document.getElementById(
+      "product-cards-footer-summary"
+    );
+    if (summaryElement) {
+      summaryElement.innerHTML = MODEL_SUMMARY_DATA[currentLayoutIndex];
+    }
+  }
+
+  function handleScrollOrResizeEvent(event) {
+    if (pagesContainerElement && event && "resize" === event.type) {
+      scrollWidthCache = pagesContainerElement.scrollWidth;
+    }
+    cancelAnimationFrame(scrollAnimationFrameId);
+    scrollAnimationFrameId = requestAnimationFrame(() => {
+      updateDisplayStates(event && "resize" === event.type);
+    });
+  }
+
+  layoutSelectorButtons.forEach((button, index) => {
+    button.addEventListener("click", function () {
+      setActiveLayout(index);
+    });
+  });
+  colorSelectorDivs.forEach((div, index) => {
+    div.addEventListener("click", function () {
+      currentColorIndicesPerLayout[currentLayoutIndex] = index;
+      updateDisplayStates();
+    });
+  });
+  pageControlButtons.forEach((button, index) => {
+    button.addEventListener("click", function () {
+      switch (index) {
+        case 0:
+          setActiveLayout(currentLayoutIndex - 1);
+          break;
+        case 1:
+          setActiveLayout(currentLayoutIndex + 1);
+          break;
+        default:
+          return;
+      }
+      updateDisplayStates();
+    });
+  });
+
+  if (pagesContainerElement) {
+    pagesContainerElement.addEventListener("scroll", handleScrollOrResizeEvent);
+    pagesContainerElement.addEventListener("click", function (event) {
+      if (window.innerWidth < 768) return;
+      if (event.clientX < 0.5 * pagesContainerElement.clientWidth) {
+        if (currentLayoutIndex > 0) setActiveLayout(currentLayoutIndex - 1);
+      } else if (event.clientX > 0.5 * pagesContainerElement.clientWidth) {
+        if (currentLayoutIndex < layoutPageElements.length - 1)
+          setActiveLayout(currentLayoutIndex + 1);
+      }
+    });
+    pagesContainerElement.addEventListener("mousemove", function (event) {
+      if (pageControlButtons[0])
+        pageControlButtons[0].classList.toggle(
+          "highlight",
+          event.clientX < 0.5 * pagesContainerElement.clientWidth
+        );
+      if (pageControlButtons[1])
+        pageControlButtons[1].classList.toggle(
+          "highlight",
+          event.clientX > 0.5 * pagesContainerElement.clientWidth
+        );
+      if (event.clientX < 0.5 * pagesContainerElement.clientWidth) {
+        pagesContainerElement.style.cursor =
+          currentLayoutIndex === 0 ? null : "pointer";
+      } else if (event.clientX > 0.5 * pagesContainerElement.clientWidth) {
+        pagesContainerElement.style.cursor =
+          currentLayoutIndex === layoutPageElements.length - 1
+            ? null
+            : "pointer";
+      }
+    });
+    pagesContainerElement.addEventListener("mouseleave", function () {
+      pageControlButtons.forEach((button) => {
+        button.classList.remove("highlight");
+      });
+    });
+  }
+
+  window.addEventListener("resize", handleScrollOrResizeEvent, {
+    passive: true,
+  });
+  document.addEventListener("scroll", handleScrollOrResizeEvent, {
+    passive: true,
+  });
+
+  setActiveLayout(1, true);
+
+  return function cleanupThreeSizes() {
+    window.removeEventListener("scroll", handleScrollOrResizeEvent);
+    window.removeEventListener("resize", handleScrollOrResizeEvent);
+    cancelAnimationFrame(scrollAnimationFrameId);
+    clearTimeout(animationClassTimeoutId);
+  };
+};
 
 // --- Section: Gallery ---
 
@@ -92,10 +450,10 @@ window.App.createGallery = function () {
   };
 };
 
-// --- Section: Cards  ---
+// --- Section: Slider Cards  ---
 
-// App.createInteriorPhotoCards function
-window.App.createInteriorPhotoCards = function () {
+// App.createSliderCards function
+window.App.createSliderCards = function () {
   const cards = document.querySelectorAll(".slider-carousel-cards-card");
   if (cards.length === 0) return () => {}; // Return no-op cleanup if no cards
 
@@ -615,17 +973,87 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.remove("segue");
   }
 
-  // Only initialized when URL matches /, /home, or /home/
+  // Page specific initializers
+
+  // createDestroy(/^(\/|\/home|\/home\/)$/, function setupAppHomepage() {
+  //   const cleanupFunctions = [
+  //     App.createProductCards(),
+  //     App.createSliderCards(),
+  //     App.createALotCanHappenCards(),
+  //     App.createBentoCardDetails(),
+  //     App.createGallery(),
+  //   ];
+  //   return function () {
+  //     cleanupFunctions.forEach((cleanup) => {
+  //       if (typeof cleanup === "function") cleanup();
+  //     });
+  //   };
+  // });
+
+  // When URL matches /, /home, or /home/
+  createDestroy(
+    /^(\/|\/home|\/home\/)$/,
+    function setupProductCardsComponents() {
+      return App.createProductCards();
+    }
+  );
+
   createDestroy(/^(\/|\/home|\/home\/)$/, function setupGalleryComponents() {
     return App.createGallery();
   });
 
   createDestroy(
     /^(\/|\/home|\/home\/)$/,
-    function setupInteriorPhotoCardsComponents() {
-      return App.createInteriorPhotoCards();
+    function setupSliderCardsComponents() {
+      return App.createSliderCards();
     }
   );
+
+  createDestroy(/.*/, function setupPagingIndicators() {
+    document.body
+      .querySelectorAll(".paging-indicator")
+      .forEach((indicatorElement) => {
+        if (undefined === indicatorElement.dataset.init) {
+          (function initializePagingIndicator(element) {
+            element.dataset.init = !0;
+            const listItems = element.querySelectorAll("li");
+            if (element.dataset.changeEmmiterSelector) {
+              document
+                .querySelector(element.dataset.changeEmmiterSelector)
+                .addEventListener("change", function (event) {
+                  listItems.forEach((li, index) => {
+                    li.classList.toggle(
+                      "paging-indicator-current",
+                      index === event.detail.index
+                    );
+                  });
+                });
+            }
+            if (element.dataset.scrollElementSelector) {
+              let lastActiveIndex;
+              document
+                .querySelector(element.dataset.scrollElementSelector)
+                .addEventListener("scroll", function (event) {
+                  const currentIndex = Math.round(
+                    (event.target.scrollLeft / event.target.scrollWidth) *
+                      listItems.length
+                  );
+                  if (lastActiveIndex !== currentIndex) {
+                    lastActiveIndex = currentIndex;
+                    listItems.forEach((li, index) => {
+                      li.classList.toggle(
+                        "paging-indicator-current",
+                        index === currentIndex
+                      );
+                    });
+                  }
+                });
+            }
+          })(indicatorElement);
+        }
+      });
+    return function () {};
+  });
 
   document.body.addEventListener("click", (event) => {
     const anchor = findLinkTargetFromEvent(event.target);
