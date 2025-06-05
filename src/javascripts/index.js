@@ -15,7 +15,7 @@ const PAGES_METADATA = {
     navigation_inverted: false,
     position: 2,
   },
-  "/menu": {
+  "/products": {
     title: "SimpleSPA - Menu",
     partial: "/src/javascripts/partials/products.html",
     class_names: "multi-menu menu-page",
