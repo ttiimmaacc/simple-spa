@@ -16,12 +16,20 @@ const PAGES_METADATA = {
     position: 2,
   },
   "/products": {
-    title: "SimpleSPA - Menu",
+    title: "SimpleSPA - Products",
     partial: "/src/javascripts/partials/products.html",
     class_names: "multi-menu menu-page",
     theme_color: "#000000",
     navigation_inverted: true,
     position: 1,
+  },
+  "/vip": {
+    title: "SimpleSPA - VIP",
+    partial: "/src/javascripts/partials/vip.html",
+    class_names: "vip",
+    theme_color: "#000000",
+    navigation_inverted: true,
+    position: 3,
   },
 };
 
@@ -1054,6 +1062,31 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     return function () {};
   });
+  // When URL matches /vip
+  createDestroy(
+    /^\/vip.*/,
+    function () {
+      const configureButton = document.querySelector(
+        "nav .backyard-configure.vip"
+      );
+      if (configureButton) {
+        configureButton.addEventListener("click", function (event) {
+          event.stopPropagation();
+          event.preventDefault();
+          const hrElement = document.querySelector(".vip-hr");
+          if (hrElement) {
+            const hrRect = hrElement.getBoundingClientRect();
+            window.scrollTo({
+              top: window.scrollY + hrRect.top,
+              behavior: "smooth",
+            });
+          }
+        });
+      }
+      return createApplication("vip");
+    },
+    "router:did-update-content"
+  );
 
   document.body.addEventListener("click", (event) => {
     const anchor = findLinkTargetFromEvent(event.target);
