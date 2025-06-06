@@ -1,0 +1,147 @@
+.vip {
+    background: #000;
+}
+
+.vip main {
+    color: #fff;
+}
+
+.vip nav .backyard-configure {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.vip nav .backyard-configure img {
+    display: none;
+}
+
+.vip-hero {
+    position: relative;
+    color: #000;
+}
+
+.vip-hero .vip-hero-title {
+    position: absolute;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    width: 50vw;
+    margin-left: -25vw;
+    text-align: center;
+}
+
+.vip-hero .vip-hero-photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    background: #fff;
+    object-fit: cover;
+}
+
+.vip-heading h2 {
+    padding: 0 5%;
+    text-align: center;
+}
+
+.vip-community img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.vip-hr hr {
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, .2);
+}
+
+.vip-form p {
+    padding-right: 10%;
+    color: rgba(255, 255, 255, .6);
+}
+
+@media (max-width:768px) {
+    .vip nav .backyard-configure {
+        width: 40px;
+        height: 40px;
+        box-sizing: border-box;
+        padding: 0;
+        transform: translate3d(-2px, 7px, 0);
+        aspect-ratio: 1;
+    }
+
+    .vip nav .backyard-configure img {
+        position: absolute;
+        display: block;
+        transform: translateX(-40%);
+    }
+
+    .vip nav .backyard-configure span {
+        display: none;
+    }
+
+    .vip-hero .vip-hero-title {
+        position: static;
+        left: unset;
+        display: block;
+        width: 100%;
+        margin: 0;
+        filter: invert(100%);
+    }
+
+    .vip-hero .vip-hero-title img {
+        width: 196px;
+    }
+
+    .vip-hero .vip-hero-photo {
+        width: calc(100% + 24px);
+        margin: 0 -12px;
+    }
+
+    .vip-text p {
+        color: rgba(255, 255, 255, .6);
+    }
+
+    .vip-form h3,
+    .vip-form p {
+        text-align: center;
+    }
+}
+
+.footer-nav .footnotes,
+.footer-nav .phone {
+    display: block;
+}
+
+.vip .error-message {
+    color: var(--color-white-60);
+}
+
+.vip .error-message a {
+    color: var(--color-white-80);
+}
+
+@media (hover:hover) {
+    .vip .error-message a:hover {
+        color: #fff;
+    }
+}
+
+.backyard-configure.vip,
+.vip .backyard-configure {
+    display: none;
+}
+
+.vip .backyard-configure.vip {
+    display: block;
+}
+
+.vip .button-rounded img {
+    filter: none;
+}
