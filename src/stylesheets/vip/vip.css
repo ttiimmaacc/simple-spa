@@ -6,12 +6,12 @@
     color: #fff;
 }
 
-.vip nav .backyard-configure {
+.vip nav .root-cta {
     opacity: 1;
     pointer-events: all;
 }
 
-.vip nav .backyard-configure img {
+.vip nav .root-cta img {
     display: none;
 }
 
@@ -67,7 +67,7 @@
 }
 
 @media (max-width:768px) {
-    .vip nav .backyard-configure {
+    .vip nav .root-cta {
         width: 40px;
         height: 40px;
         box-sizing: border-box;
@@ -76,13 +76,13 @@
         aspect-ratio: 1;
     }
 
-    .vip nav .backyard-configure img {
+    .vip nav .root-cta img {
         position: absolute;
         display: block;
         transform: translateX(-40%);
     }
 
-    .vip nav .backyard-configure span {
+    .vip nav .root-cta span {
         display: none;
     }
 
@@ -133,12 +133,12 @@
     }
 }
 
-.backyard-configure.vip,
-.vip .backyard-configure {
+.root-cta.vip,
+.vip .root-cta {
     display: none;
 }
 
-.vip .backyard-configure.vip {
+.vip .root-cta.vip {
     display: block;
 }
 
