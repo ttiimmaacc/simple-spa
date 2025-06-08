@@ -23,6 +23,14 @@ const PAGES_METADATA = {
     navigation_inverted: true,
     position: 1,
   },
+  "/compare": {
+    title: "SimpleSPA - Compare",
+    partial: "/src/javascripts/partials/compare.html",
+    class_names: "product-compare",
+    theme_color: "#000000",
+    navigation_inverted: false,
+    position: 1,
+  },
   "/vip": {
     title: "SimpleSPA - VIP",
     partial: "/src/javascripts/partials/vip.html",
@@ -549,6 +557,152 @@ window.App.createSliderCards = function () {
   };
 };
 
+createDestroy(/^\/compare.*/, function setupComparePage() {
+  const LOCAL_STORAGE_KEY = "compare:v3";
+  const headerElement = document.querySelector(".product-compare-header");
+  const selectElements = Array.from(
+    document.querySelectorAll(".product-compare-header select")
+  );
+  const rowGroupElements = document.querySelectorAll(".product-compare-row");
+  const tableRowElements = document.querySelectorAll(
+    ".product-compare-row table tr"
+  );
+  let lastFocusedRowIndex, lastFocusedRowTopOffset;
+
+  function getActiveSelects() {
+    return selectElements.slice(0, window.innerWidth < 1024 ? 2 : 3);
+  }
+  let lastWindowWidth = window.innerWidth;
+
+  function handleScrollOrResize() {
+    if (lastWindowWidth < 1024 && window.innerWidth >= 1024) {
+      const currentSelections = getActiveSelects().map((sel) => sel.value);
+      if (
+        currentSelections[0] === currentSelections[2] ||
+        currentSelections[1] === currentSelections[2]
+      ) {
+        selectElements[2].value = ["one", "two", "three", "four", "five"].find(
+          (layout) => !currentSelections.includes(layout)
+        );
+      }
+      updateTableComparisons();
+    }
+    lastWindowWidth = window.innerWidth;
+
+    let minDistanceToCenter = Number.MAX_SAFE_INTEGER;
+    lastFocusedRowIndex = undefined;
+    rowGroupElements.forEach((rowEl, index) => {
+      if (undefined !== rowEl.dataset.mayHide) return;
+      if (0 === rowEl.clientHeight) return;
+      const rowTop = rowEl.getBoundingClientRect().top;
+      const distanceToCenter = Math.abs(rowTop - 0.5 * window.innerHeight);
+      if (distanceToCenter < minDistanceToCenter) {
+        minDistanceToCenter = distanceToCenter;
+        lastFocusedRowIndex = index;
+        lastFocusedRowTopOffset = rowTop;
+      }
+    });
+    if (headerElement)
+      headerElement.classList.toggle(
+        "product-compare-header-sticky",
+        1.5 * headerElement.getBoundingClientRect().height < window.scrollY
+      );
+  }
+
+  function updateTableComparisons(event) {
+    if (event && event.target) event.target.blur();
+
+    const activeLayouts = getActiveSelects().map((sel) => sel.value);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(activeLayouts));
+
+    tableRowElements.forEach((tr) => {
+      let emptyCellsInRow = 0;
+      tr.querySelectorAll("td").forEach((td) => {
+        const isHidden = activeLayouts.includes(td.dataset.layout) === false;
+        td.hidden = isHidden;
+        if (
+          isHidden === false &&
+          td.querySelector(".product-compare-text-empty")
+        ) {
+          emptyCellsInRow += 1;
+        }
+      });
+      const allCellsInRowAreEffectivelyEmpty =
+        emptyCellsInRow === activeLayouts.length;
+      tr.closest("table").classList.toggle(
+        "product-compare-row-hidden",
+        allCellsInRowAreEffectivelyEmpty
+      );
+
+      const parentRowGroup = tr.closest(".product-compare-row");
+      const allTablesInGroupHidden =
+        parentRowGroup.querySelectorAll("table").length ===
+        parentRowGroup.querySelectorAll(".product-compare-row-hidden").length;
+      parentRowGroup.classList.toggle(
+        "product-compare-row-hidden",
+        allTablesInGroupHidden
+      );
+
+      // Reorder TD elements to match select order (last select is first column)
+      activeLayouts
+        .slice()
+        .reverse()
+        .forEach((layoutValue) => {
+          tr.insertBefore(
+            tr.querySelector(`td[data-layout=${layoutValue}]`),
+            tr.firstChild
+          );
+        });
+    });
+
+    document
+      .querySelectorAll(".product-compare-header option")
+      .forEach((option) => {
+        option.disabled =
+          option.parentElement.value !== option.value &&
+          activeLayouts.includes(option.value);
+      });
+
+    getActiveSelects().forEach((selectEl) => {
+      const modelName = selectEl.value.replace("bed", "-bedroom");
+      selectEl.previousElementSibling.href = `/products/${modelName}`;
+      selectEl.previousElementSibling.querySelector(
+        "img"
+      ).src = `/assets/images/products/${selectEl.value}-black-1000.png`;
+    });
+
+    (function restoreScrollPosition() {
+      if (undefined === lastFocusedRowIndex || lastFocusedRowIndex < 1) return;
+      const scrollAdjustment =
+        rowGroupElements[lastFocusedRowIndex].getBoundingClientRect().top -
+        lastFocusedRowTopOffset;
+      window.scrollBy(0, scrollAdjustment);
+    })();
+  }
+
+  selectElements.forEach((sel) => {
+    sel.addEventListener("change", updateTableComparisons);
+  });
+  window.addEventListener("scroll", handleScrollOrResize);
+  window.addEventListener("resize", handleScrollOrResize);
+
+  (function loadInitialSelections() {
+    const storedSelectionsJson = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (null === storedSelectionsJson) return;
+    JSON.parse(storedSelectionsJson).forEach((layoutValue, index) => {
+      selectElements[index].value = layoutValue;
+    });
+  })();
+
+  updateTableComparisons();
+  handleScrollOrResize();
+
+  return function cleanupComparePage() {
+    window.removeEventListener("scroll", handleScrollOrResize);
+    window.removeEventListener("resize", handleScrollOrResize);
+  };
+});
+
 // --- createDestroy function ---
 // Place this function definition before it's used.
 function createDestroy(
@@ -1062,13 +1216,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     return function () {};
   });
+
   // When URL matches /vip
   createDestroy(
     /^\/vip.*/,
     function () {
-      const configureButton = document.querySelector(
-        "nav .backyard-configure.vip"
-      );
+      const configureButton = document.querySelector("nav .root-cta.vip");
       if (configureButton) {
         configureButton.addEventListener("click", function (event) {
           event.stopPropagation();
