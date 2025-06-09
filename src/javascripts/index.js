@@ -5,6 +5,8 @@ const PAGES_METADATA = {
     class_names: "home-page",
     theme_color: "#000000",
     navigation_inverted: false,
+    footer_inverted: false,
+    scroll_based_navigation: true,
     position: 2,
   },
   "/home": {
@@ -13,6 +15,8 @@ const PAGES_METADATA = {
     class_names: "home-page",
     theme_color: "#000000",
     navigation_inverted: false,
+    footer_inverted: false,
+    scroll_based_navigation: true,
     position: 2,
   },
   "/products": {
@@ -21,6 +25,8 @@ const PAGES_METADATA = {
     class_names: "multi-menu menu-page",
     theme_color: "#000000",
     navigation_inverted: true,
+    footer_inverted: false,
+    scroll_based_navigation: true,
     position: 1,
   },
   "/compare": {
@@ -29,6 +35,8 @@ const PAGES_METADATA = {
     class_names: "product-compare",
     theme_color: "#000000",
     navigation_inverted: false,
+    footer_inverted: false,
+    scroll_based_navigation: false,
     position: 1,
   },
   "/vip": {
@@ -37,6 +45,8 @@ const PAGES_METADATA = {
     class_names: "vip",
     theme_color: "#000000",
     navigation_inverted: true,
+    footer_inverted: true,
+    scroll_based_navigation: false,
     position: 3,
   },
 };
@@ -51,6 +61,7 @@ const navLinksForCurrentClass = navElement
 
 const toggleButton = navElement ? navElement.querySelector(".toggle") : null;
 const themeColorMetaTag = document.querySelector("meta[name=theme-color]");
+const footerElement = document.querySelector(".footer-nav");
 
 // --- State Variables ---
 let pageDataCache = {};
@@ -423,8 +434,6 @@ window.App.createProductCards = function () {
 };
 
 // --- Section: Gallery ---
-
-// App.createGallery function
 window.App.createGallery = function () {
   const galleryContainer = document.querySelector(".gallery");
   if (null === galleryContainer) return () => {}; // Return a no-op cleanup if element not found
@@ -467,8 +476,6 @@ window.App.createGallery = function () {
 };
 
 // --- Section: Slider Cards  ---
-
-// App.createSliderCards function
 window.App.createSliderCards = function () {
   const cards = document.querySelectorAll(".slider-carousel-cards-card");
   if (cards.length === 0) return () => {}; // Return no-op cleanup if no cards
@@ -557,154 +564,44 @@ window.App.createSliderCards = function () {
   };
 };
 
-createDestroy(/^\/compare.*/, function setupComparePage() {
-  const LOCAL_STORAGE_KEY = "compare:v3";
-  const headerElement = document.querySelector(".product-compare-header");
-  const selectElements = Array.from(
-    document.querySelectorAll(".product-compare-header select")
+window.App.invertNavigation = function () {
+  const navElement = document.getElementsByTagName("nav")[0];
+  const pageSections = Array.from(
+    document.querySelectorAll(".slides > *, article > *, .page-section")
   );
-  const rowGroupElements = document.querySelectorAll(".product-compare-row");
-  const tableRowElements = document.querySelectorAll(
-    ".product-compare-row table tr"
-  );
-  let lastFocusedRowIndex, lastFocusedRowTopOffset;
 
-  function getActiveSelects() {
-    return selectElements.slice(0, window.innerWidth < 1024 ? 2 : 3);
-  }
-  let lastWindowWidth = window.innerWidth;
+  function checkAndInvertNavigation() {
+    const isMobile = window.innerWidth < 768;
+    const currentSection = pageSections.find((section) => {
+      const triggerOffset = isMobile ? 45 : 65;
+      const { top, bottom } = section.getBoundingClientRect();
+      return top < triggerOffset && bottom > triggerOffset;
+    });
 
-  function handleScrollOrResize() {
-    if (lastWindowWidth < 1024 && window.innerWidth >= 1024) {
-      const currentSelections = getActiveSelects().map((sel) => sel.value);
-      if (
-        currentSelections[0] === currentSelections[2] ||
-        currentSelections[1] === currentSelections[2]
-      ) {
-        selectElements[2].value = ["one", "two", "three", "four", "five"].find(
-          (layout) => !currentSelections.includes(layout)
-        );
+    if (currentSection && navElement) {
+      if (isMobile && currentSection.dataset.invertMobile !== undefined) {
+        const shouldInvertMobile =
+          "true" === currentSection.dataset.invertMobile;
+        navElement.classList.toggle("inverted", shouldInvertMobile);
+      } else {
+        // Handle data-invert attribute: "true" = invert, "false" or missing = don't invert
+        const shouldInvert = currentSection.dataset.invert === "true";
+        navElement.classList.toggle("inverted", shouldInvert);
       }
-      updateTableComparisons();
     }
-    lastWindowWidth = window.innerWidth;
-
-    let minDistanceToCenter = Number.MAX_SAFE_INTEGER;
-    lastFocusedRowIndex = undefined;
-    rowGroupElements.forEach((rowEl, index) => {
-      if (undefined !== rowEl.dataset.mayHide) return;
-      if (0 === rowEl.clientHeight) return;
-      const rowTop = rowEl.getBoundingClientRect().top;
-      const distanceToCenter = Math.abs(rowTop - 0.5 * window.innerHeight);
-      if (distanceToCenter < minDistanceToCenter) {
-        minDistanceToCenter = distanceToCenter;
-        lastFocusedRowIndex = index;
-        lastFocusedRowTopOffset = rowTop;
-      }
-    });
-    if (headerElement)
-      headerElement.classList.toggle(
-        "product-compare-header-sticky",
-        1.5 * headerElement.getBoundingClientRect().height < window.scrollY
-      );
   }
 
-  function updateTableComparisons(event) {
-    if (event && event.target) event.target.blur();
-
-    const activeLayouts = getActiveSelects().map((sel) => sel.value);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(activeLayouts));
-
-    tableRowElements.forEach((tr) => {
-      let emptyCellsInRow = 0;
-      tr.querySelectorAll("td").forEach((td) => {
-        const isHidden = activeLayouts.includes(td.dataset.layout) === false;
-        td.hidden = isHidden;
-        if (
-          isHidden === false &&
-          td.querySelector(".product-compare-text-empty")
-        ) {
-          emptyCellsInRow += 1;
-        }
-      });
-      const allCellsInRowAreEffectivelyEmpty =
-        emptyCellsInRow === activeLayouts.length;
-      tr.closest("table").classList.toggle(
-        "product-compare-row-hidden",
-        allCellsInRowAreEffectivelyEmpty
-      );
-
-      const parentRowGroup = tr.closest(".product-compare-row");
-      const allTablesInGroupHidden =
-        parentRowGroup.querySelectorAll("table").length ===
-        parentRowGroup.querySelectorAll(".product-compare-row-hidden").length;
-      parentRowGroup.classList.toggle(
-        "product-compare-row-hidden",
-        allTablesInGroupHidden
-      );
-
-      // Reorder TD elements to match select order (last select is first column)
-      activeLayouts
-        .slice()
-        .reverse()
-        .forEach((layoutValue) => {
-          tr.insertBefore(
-            tr.querySelector(`td[data-layout=${layoutValue}]`),
-            tr.firstChild
-          );
-        });
-    });
-
-    document
-      .querySelectorAll(".product-compare-header option")
-      .forEach((option) => {
-        option.disabled =
-          option.parentElement.value !== option.value &&
-          activeLayouts.includes(option.value);
-      });
-
-    getActiveSelects().forEach((selectEl) => {
-      const modelName = selectEl.value.replace("bed", "-bedroom");
-      selectEl.previousElementSibling.href = `/products/${modelName}`;
-      selectEl.previousElementSibling.querySelector(
-        "img"
-      ).src = `/assets/images/products/${selectEl.value}-black-1000.png`;
-    });
-
-    (function restoreScrollPosition() {
-      if (undefined === lastFocusedRowIndex || lastFocusedRowIndex < 1) return;
-      const scrollAdjustment =
-        rowGroupElements[lastFocusedRowIndex].getBoundingClientRect().top -
-        lastFocusedRowTopOffset;
-      window.scrollBy(0, scrollAdjustment);
-    })();
-  }
-
-  selectElements.forEach((sel) => {
-    sel.addEventListener("change", updateTableComparisons);
+  window.addEventListener("scroll", checkAndInvertNavigation, {
+    passive: true,
   });
-  window.addEventListener("scroll", handleScrollOrResize);
-  window.addEventListener("resize", handleScrollOrResize);
 
-  (function loadInitialSelections() {
-    const storedSelectionsJson = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (null === storedSelectionsJson) return;
-    JSON.parse(storedSelectionsJson).forEach((layoutValue, index) => {
-      selectElements[index].value = layoutValue;
-    });
-  })();
+  checkAndInvertNavigation();
 
-  updateTableComparisons();
-  handleScrollOrResize();
-
-  return function cleanupComparePage() {
-    window.removeEventListener("scroll", handleScrollOrResize);
-    window.removeEventListener("resize", handleScrollOrResize);
+  return function cleanupInvertNavigation() {
+    window.removeEventListener("scroll", checkAndInvertNavigation);
   };
-});
+};
 
-// --- createDestroy function ---
-// Place this function definition before it's used.
 function createDestroy(
   routeRegex,
   asyncSetupFunction,
@@ -783,13 +680,23 @@ function applyCurrentPageStylesAndMeta() {
       const classList = currentPageMeta.class_names.split(" ").filter(Boolean);
       if (classList.length > 0) document.body.classList.add(...classList);
     }
+
+    // Only apply navigation_inverted if NOT on products route (which uses scroll-based inversion)
     if (
       navElement &&
-      typeof currentPageMeta.navigation_inverted === "boolean"
+      typeof currentPageMeta.navigation_inverted === "boolean" &&
+      !currentPageMeta.scroll_based_navigation
     ) {
       navElement.classList.toggle(
         "inverted",
         currentPageMeta.navigation_inverted
+      );
+    }
+
+    if (footerElement && typeof currentPageMeta.footer_inverted === "boolean") {
+      footerElement.classList.toggle(
+        "inverted",
+        currentPageMeta.footer_inverted
       );
     }
   }
@@ -1171,6 +1078,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
+  createDestroy(/^(\/|\/home|\/home\/)$/, function setupHomeInvertNavigation() {
+    return window.App.invertNavigation();
+  });
+
   createDestroy(/.*/, function setupPagingIndicators() {
     document.body
       .querySelectorAll(".paging-indicator")
@@ -1240,6 +1151,168 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     "router:did-update-content"
   );
+
+  // When URL matches /products
+  createDestroy(/^\/products.*/, function () {
+    const cleanupFunctions = [window.App.invertNavigation()];
+    return function () {
+      cleanupFunctions.forEach((cleanup) => {
+        if (typeof cleanup === "function") cleanup();
+      });
+    };
+  });
+
+  // When URL matches /compare
+  createDestroy(/^\/compare.*/, function setupComparePage() {
+    const LOCAL_STORAGE_KEY = "compare:v3";
+    const headerElement = document.querySelector(".product-compare-header");
+    const selectElements = Array.from(
+      document.querySelectorAll(".product-compare-header select")
+    );
+    const rowGroupElements = document.querySelectorAll(".product-compare-row");
+    const tableRowElements = document.querySelectorAll(
+      ".product-compare-row table tr"
+    );
+    let lastFocusedRowIndex, lastFocusedRowTopOffset;
+
+    function getActiveSelects() {
+      return selectElements.slice(0, window.innerWidth < 1024 ? 2 : 3);
+    }
+    let lastWindowWidth = window.innerWidth;
+
+    function handleScrollOrResize() {
+      if (lastWindowWidth < 1024 && window.innerWidth >= 1024) {
+        const currentSelections = getActiveSelects().map((sel) => sel.value);
+        if (
+          currentSelections[0] === currentSelections[2] ||
+          currentSelections[1] === currentSelections[2]
+        ) {
+          selectElements[2].value = [
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+          ].find((layout) => !currentSelections.includes(layout));
+        }
+        updateTableComparisons();
+      }
+      lastWindowWidth = window.innerWidth;
+
+      let minDistanceToCenter = Number.MAX_SAFE_INTEGER;
+      lastFocusedRowIndex = undefined;
+      rowGroupElements.forEach((rowEl, index) => {
+        if (undefined !== rowEl.dataset.mayHide) return;
+        if (0 === rowEl.clientHeight) return;
+        const rowTop = rowEl.getBoundingClientRect().top;
+        const distanceToCenter = Math.abs(rowTop - 0.5 * window.innerHeight);
+        if (distanceToCenter < minDistanceToCenter) {
+          minDistanceToCenter = distanceToCenter;
+          lastFocusedRowIndex = index;
+          lastFocusedRowTopOffset = rowTop;
+        }
+      });
+      if (headerElement)
+        headerElement.classList.toggle(
+          "product-compare-header-sticky",
+          1.5 * headerElement.getBoundingClientRect().height < window.scrollY
+        );
+    }
+
+    function updateTableComparisons(event) {
+      if (event && event.target) event.target.blur();
+
+      const activeLayouts = getActiveSelects().map((sel) => sel.value);
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(activeLayouts));
+
+      tableRowElements.forEach((tr) => {
+        let emptyCellsInRow = 0;
+        tr.querySelectorAll("td").forEach((td) => {
+          const isHidden = activeLayouts.includes(td.dataset.layout) === false;
+          td.hidden = isHidden;
+          if (
+            isHidden === false &&
+            td.querySelector(".product-compare-text-empty")
+          ) {
+            emptyCellsInRow += 1;
+          }
+        });
+        const allCellsInRowAreEffectivelyEmpty =
+          emptyCellsInRow === activeLayouts.length;
+        tr.closest("table").classList.toggle(
+          "product-compare-row-hidden",
+          allCellsInRowAreEffectivelyEmpty
+        );
+
+        const parentRowGroup = tr.closest(".product-compare-row");
+        const allTablesInGroupHidden =
+          parentRowGroup.querySelectorAll("table").length ===
+          parentRowGroup.querySelectorAll(".product-compare-row-hidden").length;
+        parentRowGroup.classList.toggle(
+          "product-compare-row-hidden",
+          allTablesInGroupHidden
+        );
+
+        // Reorder TD elements to match select order (last select is first column)
+        activeLayouts
+          .slice()
+          .reverse()
+          .forEach((layoutValue) => {
+            tr.insertBefore(
+              tr.querySelector(`td[data-layout=${layoutValue}]`),
+              tr.firstChild
+            );
+          });
+      });
+
+      document
+        .querySelectorAll(".product-compare-header option")
+        .forEach((option) => {
+          option.disabled =
+            option.parentElement.value !== option.value &&
+            activeLayouts.includes(option.value);
+        });
+
+      getActiveSelects().forEach((selectEl) => {
+        const modelName = selectEl.value.replace("bed", "-bedroom");
+        selectEl.previousElementSibling.href = `/products/${modelName}`;
+        selectEl.previousElementSibling.querySelector(
+          "img"
+        ).src = `/assets/images/products/${selectEl.value}-black-1000.png`;
+      });
+
+      (function restoreScrollPosition() {
+        if (undefined === lastFocusedRowIndex || lastFocusedRowIndex < 1)
+          return;
+        const scrollAdjustment =
+          rowGroupElements[lastFocusedRowIndex].getBoundingClientRect().top -
+          lastFocusedRowTopOffset;
+        window.scrollBy(0, scrollAdjustment);
+      })();
+    }
+
+    selectElements.forEach((sel) => {
+      sel.addEventListener("change", updateTableComparisons);
+    });
+    window.addEventListener("scroll", handleScrollOrResize);
+    window.addEventListener("resize", handleScrollOrResize);
+
+    (function loadInitialSelections() {
+      const storedSelectionsJson = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (null === storedSelectionsJson) return;
+      JSON.parse(storedSelectionsJson).forEach((layoutValue, index) => {
+        selectElements[index].value = layoutValue;
+      });
+    })();
+
+    updateTableComparisons();
+    handleScrollOrResize();
+
+    return function cleanupComparePage() {
+      window.removeEventListener("scroll", handleScrollOrResize);
+      window.removeEventListener("resize", handleScrollOrResize);
+    };
+  });
 
   document.body.addEventListener("click", (event) => {
     const anchor = findLinkTargetFromEvent(event.target);
