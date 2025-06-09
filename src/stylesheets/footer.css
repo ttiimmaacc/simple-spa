@@ -80,6 +80,18 @@
     text-decoration: none;
 }
 
+.footer-nav.inverted ul li a {
+    color: #fff;
+}
+
+.footer-nav.inverted .footer-legal {
+    color: rgba(255, 255, 255, .6);
+}
+
+.footer-nav.inverted .footer-legal a {
+    color: #fff !important;
+}
+
 .footer-nav-variant-light ul li a {
     color: inherit;
 }
