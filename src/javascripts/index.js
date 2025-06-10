@@ -20,9 +20,19 @@ const PAGES_METADATA = {
     position: 2,
   },
   "/products": {
-    title: "SimpleSPA - Products",
+    title: "Products - Collection - SimpleSPA",
     partial: "/src/javascripts/partials/products.html",
-    class_names: "multi-menu menu-page",
+    class_names: "product-models product-page product-models-index",
+    theme_color: "#000000",
+    navigation_inverted: true,
+    footer_inverted: false,
+    scroll_based_navigation: true,
+    position: 1,
+  },
+  "/products/product1": {
+    title: "Product 1 - SimpleSPA",
+    partial: "/src/javascripts/partials/product1.html",
+    class_names: "product-models product-page product-one",
     theme_color: "#000000",
     navigation_inverted: true,
     footer_inverted: false,
@@ -85,11 +95,11 @@ window.App.createProductCards = function () {
     "product 5",
   ];
   const MODEL_PATH_DATA = [
-    "product-1",
-    "product-2",
-    "product-3",
-    "product-4",
-    "product-5",
+    "product1",
+    "product2",
+    "product3",
+    "product4",
+    "product5",
   ];
   const MODEL_DISPLAY_NAMES = [
     "the product 1",
@@ -478,9 +488,9 @@ window.App.createGallery = function () {
 // --- Section: Slider Cards  ---
 window.App.createSliderCards = function () {
   const cards = document.querySelectorAll(".slider-carousel-cards-card");
-  if (cards.length === 0) return () => {}; // Return no-op cleanup if no cards
+  if (cards.length === 0) return () => {};
 
-  const cleanupFns = []; // Store individual card cleanup for later
+  const cleanupFns = [];
 
   cards.forEach((cardElement, index, allCards) => {
     // Prevent re-initialization for each card
@@ -1152,7 +1162,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "router:did-update-content"
   );
 
-  // When URL matches /products
+  // Matches /products, /products/, /products/anything
   createDestroy(/^\/products.*/, function () {
     const cleanupFunctions = [window.App.invertNavigation()];
     return function () {
@@ -1160,6 +1170,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (typeof cleanup === "function") cleanup();
       });
     };
+  });
+
+  // Handles slider cards setup and cleanup
+  createDestroy(/^\/products.*/, function setupSliderCardsComponents() {
+    return App.createSliderCards();
   });
 
   // When URL matches /compare
